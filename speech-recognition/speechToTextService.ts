@@ -1,10 +1,22 @@
 const fs = require("fs");
 const sdk = require("microsoft-cognitiveservices-speech-sdk");
+const { DefaultAzureCredential } = require("@azure/identity");
 
 
 export async function SpeechToTextFromFile(file_path) {
 
-    const speechConfig = sdk.SpeechConfig.fromSubscription(process.env.SPEECH_KEY, process.env.SPEECH_REGION);
+    //const speechConfig = sdk.SpeechConfig.fromSubscription(process.env.SPEECH_KEY, process.env.SPEECH_REGION);
+    // use Entra user MI auth instead of key
+    // reference: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/how-to-configure-azure-ad-auth?tabs=azure-cli%2Cportal&pivots=programming-language-csharp
+    // https://github.com/microsoft/cognitive-services-speech-sdk-js/blob/e89846a774639bfb05e9550d4d759871790cf627/src/sdk/SpeechConfig.ts#L25
+    const resourceId = process.env.SPEECH_RESOURCE_ID;
+    const region = process.env.SPEECH_RESOURCE_REGION;
+
+    const credential = new DefaultAzureCredential({ managedIdentityClientId: process.env.AZURE_CLIENT_ID });
+    var accessToken = await credential.getToken("https://cognitiveservices.azure.com/.default");
+    var authorizationToken = `aad#${resourceId}#${accessToken}`;
+    const speechConfig =sdk.SpeechConfig.fromAuthorizationToken(authorizationToken, region);
+    
     speechConfig.speechRecognitionLanguage = "en-US";
     let audioConfig = sdk.AudioConfig.fromWavFileInput(fs.readFileSync(file_path));
     let speechRecognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);

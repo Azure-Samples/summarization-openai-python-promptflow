@@ -5,6 +5,7 @@ import azure.cognitiveservices.speech as speechsdk
 from dotenv import load_dotenv
 from promptflow import tool
 from promptflow.connections import CustomConnection
+from azure.identity import ManagedIdentityCredential, ClientSecretCredential
 
 # %%
 # Load environment variables
@@ -16,7 +17,15 @@ use_default_microphone = False
 filename = "../data/audio-data/issue0.wav"
 
 # %%
-speech_config = speechsdk.SpeechConfig(subscription=os.environ["SPEECH_KEY"], region=os.environ["SPEECH_REGION"])
+# use Microsoft Entra user MI auth, instead of key
+managed_identity_client_id = os.environ.get('AZURE_MYSQL_CLIENTID')
+cred = ManagedIdentityCredential(client_id=managed_identity_client_id)
+access_token = cred.get_token('https://cognitiveservices.azure.com/.default')
+speech_resource_id = os.environ.get("SPEECH_RESOURCE_ID")
+speech_resource_region = os.environ.get("SPEECH_RESOURCE_REGION")
+authorization_token = "aad#{speechResourceId}#{accessToken}".format(speech_resource_id, access_token)
+speech_config = speechsdk.SpeechConfig(authorization_token, speech_resource_region)
+
 speech_config.speech_recognition_language="en-US"
 
 if use_default_microphone:

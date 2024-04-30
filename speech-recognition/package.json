@@ -1,0 +1,13 @@
+{
+    "name": "speechToTextService",
+    "version": "0.1.0",
+    "description": "",
+    "dependencies": {
+      "@azure/identity": "^4.1.0",
+      "microsoft-cognitiveservices-speech-sdk": "^1.36.0"
+    },
+    "devDependencies": {
+      "typescript": "^4.7.3"
+    }
+  }
+  
