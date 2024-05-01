@@ -2,18 +2,16 @@
 
 import os
 import azure.cognitiveservices.speech as speechsdk
-from dotenv import load_dotenv
-from promptflow import tool
-from promptflow.connections import CustomConnection
+from dotenv import load_dotenv, find_dotenv
+from promptflow.core import Prompty, AzureOpenAIModelConfiguration, OpenAIModelConfiguration
 
 # %%
 # Load environment variables
-load_dotenv("../local.env")
-print(os.environ.get("SPEECH_REGION"))
+load_dotenv(find_dotenv())
 
 # %%
 use_default_microphone = False
-filename = "../data/audio-data/issue0.wav"
+filename = "../ticket-processing/data/audio-data/issue2.wav"
 
 # %%
 speech_config = speechsdk.SpeechConfig(subscription=os.environ["SPEECH_KEY"], region=os.environ["SPEECH_REGION"])
@@ -28,7 +26,6 @@ else:
     audio_config = speechsdk.audio.AudioConfig(filename=filename)
 
         
-
 # %%
 speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
 speech_recognition_result = speech_recognizer.recognize_once_async().get()
@@ -37,7 +34,6 @@ speech_recognition_result = speech_recognizer.recognize_once_async().get()
 # %%
 if speech_recognition_result.reason == speechsdk.ResultReason.RecognizedSpeech:
     print("Recognized: {}".format(speech_recognition_result.text))
-    print(speech_recognition_result.text)
 elif speech_recognition_result.reason == speechsdk.ResultReason.NoMatch:
     print("No speech could be recognized: {}".format(speech_recognition_result.no_match_details))
     print("No speech could be recognized.")
@@ -49,5 +45,35 @@ elif speech_recognition_result.reason == speechsdk.ResultReason.Canceled:
         print("Did you set the speech resource key and region values?")
         print("Speech Recognition canceled: {}".format(cancellation_details.reason))
 
+ticket_text = speech_recognition_result.text
 
+# Load prompty with AzureOpenAIModelConfiguration override
+configuration = AzureOpenAIModelConfiguration(
+    azure_deployment="prompty-ai",
+    api_key=os.environ["AZURE_OPENAI_API_KEY"],
+    api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+    azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
+)
+override_model = {
+    "configuration": configuration,
+    "parameters": {"max_tokens": 512}
+}
+
+# If you'd like to use your OpenAI account instead, use the following configuration
+# configuration = OpenAIModelConfiguration(
+#     model="gpt-35-turbo",
+#     base_url="${env:OPENAI_BASE_URL}",
+#     api_key="${env:OPENAI_API_KEY}",
+# )
+# override_model = {
+#     "configuration": configuration,
+#     "parameters": {"max_tokens": 512}
+# }
+
+prompty_obj = Prompty.load("../ticket-processing/summarize.prompty", model=override_model)
+summary = prompty_obj(problem=f'{ticket_text}')
+
+print(" ")
+print("Reported Issue: ")
+print(summary)
 

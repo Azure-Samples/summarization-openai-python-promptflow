@@ -1,15 +1,51 @@
 ---
 name: Basic Prompt
-description: A basic prompt that uses the GPT-3 chat API to answer questions
+description: A basic prompt that uses the GPT-3 chat API
 authors:
   - Your Name
-api: chat
 model:
-  azure_deployment: gpt-35-turbo
+    api: chat
+    configuration:
+        type: azure_openai
+        azure_deployment: gpt-35-turbo
+        api_key: ${env:AZURE_OPENAI_API_KEY}
+        api_version: ${env:AZURE_OPENAI_API_VERSION}
+        azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
+    parameters:
+        max_tokens: 128
+        temperature: 0.2
+        response_format:
+            type: text
+inputs:
+    first_name:
+        type: string
+        default: "Jane"
+    last_name: 
+        type: string
+        default: "Doe"
+    problem:
+        type: string
+        default: "no issue"
+    chat_history:
+        type: list
+        default: []
+outputs: 
+    answer:
+        type: string
+
+sample:
+    first_name: "Jane"
+    last_name: "Doe"
+    reported_issue: "I need to open a problem report for part number ABC 123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24°C and we are seeing this after three to four laps during once when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG 234."
+    chat_history: []
+
 ---
 
 system:
 You are an AI agent for the Contoso Manufacturing, a manufacturing that makes car batteries. As the agent, your job is to summarize the issue reported by field and shop floor workers. The issue will be reported in a long form text. You will need to summarize the issue and classify what department the issue should be sent to. The three options for classification are: design, engineering, or manufacturing.
+You are helping {{first_name}} {{last_name}} to report their issue to the relevant department in a concise way.
+Make sure the summary is in bullet points to highlight the key points. At the end of the report summary state who the issue was reported by.
+
 
 Extract the following key points from the text:
 

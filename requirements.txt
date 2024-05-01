@@ -1,0 +1,5 @@
+promptflow
+promptflow-tools
+azure-cognitiveservices-speech
+azure-identity
+python-dotenv
