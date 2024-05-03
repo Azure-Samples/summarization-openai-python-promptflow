@@ -67,7 +67,7 @@ Once you have an Azure account you have two options for setting up this project.
 ### Github Codespaces 
 
 You can run this repo virtually by using GitHub Codespaces, which will open a web-based VS Code in your browser:
-[Github Codespaces link]
+[Github Codespaces](https://codespaces.new/Azure-Samples/summarization-openai-python-promptflow)
 
 ### Local Environment 
 
