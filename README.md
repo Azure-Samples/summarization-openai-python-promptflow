@@ -51,7 +51,7 @@ Diagram should show: audio --> Text --> LLM + Prompty file --> Summary
 
 ### Prerequisites
 
-#### Azure Account 
+### Azure Account 
 
 **IMPORTANT:** In order to deploy and run this example, you'll need:
 
@@ -64,12 +64,12 @@ Diagram should show: audio --> Text --> LLM + Prompty file --> Summary
 
 Once you have an Azure account you have two options for setting up this project. The easiest way to get started is GitHub Codespaces, since it will setup all the tools for you, but you can also set it up [locally]() if desired.
 
-#### Github Codespaces 
+### Github Codespaces 
 
 You can run this repo virtually by using GitHub Codespaces, which will open a web-based VS Code in your browser:
 [Github Codespaces link]
 
-#### Local Environment 
+### Local Environment 
 
 - Install [azd](https://aka.ms/install-azd)
     - Windows: `winget install microsoft.azd`
