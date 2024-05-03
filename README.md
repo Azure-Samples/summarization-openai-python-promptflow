@@ -94,7 +94,9 @@ pip install -r requirements.txt
 ### Quickstart
  
 1. Clone the repository and intialize the project: 
-`azd init summarization-openai-python-promptflow`
+```
+azd init summarization-openai-python-promptflow
+```
 Note that this command will initialize a git repository, so you do not need to clone this repository.
 
 2. Login to your Azure account:
