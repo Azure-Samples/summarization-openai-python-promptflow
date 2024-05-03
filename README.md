@@ -127,8 +127,7 @@ You can estimate the cost of this project's architecture with [Azure's pricing c
 
 ## Securtiy Guidelines
 
-We recommend using keyless authentication for this project. Read more about why you should use managed identities on our [blog](https://techcommunity.microsoft.com/t5/microsoft-developer-community/using-keyless-authentication-with-azure-openai/ba-p/4111521)
-We can show how to set up keyless auth for the speech sdk with azd. More detailed info here: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/role-based-access-control
+We recommend using keyless authentication for this project. Read more about why you should use managed identities on our [blog](https://techcommunity.microsoft.com/t5/microsoft-developer-community/using-keyless-authentication-with-azure-openai/ba-p/4111521). 
 
 ## Resources
 
