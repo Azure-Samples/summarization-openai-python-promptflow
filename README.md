@@ -96,19 +96,22 @@ pip install -r requirements.txt
 1. Clone the repository and intialize the project: 
 `azd init summarization-openai-python-promptflow`
 Note that this command will initialize a git repository, so you do not need to clone this repository.
+
 2. Login to your Azure account:
 ```
 azd auth login
 ```
+
 3. Create a new azd environment:
 ```
 azd env new
 ```
 Enter a name that will be used for the resource group. This will create a new folder in the .azure folder, and set it as the active environment for any calls to azd going forward.
+
 4. Provision and deploy the project to Azure: `azd up`
-5. Set up CI/CD with `azd pipeline config`
-6. To run the sample navigate into the the correct folder by running `cd speech-recognition`. 
-7. Run `python speech_to_text.py` to use the app with the sample audio data.  
+6. Set up CI/CD with `azd pipeline config`
+7. To run the sample navigate into the the correct folder by running `cd speech-recognition`. 
+8. Run `python speech_to_text.py` to use the app with the sample audio data.  
 
 ### Local Development
 Describe how to run and develop the app locally
