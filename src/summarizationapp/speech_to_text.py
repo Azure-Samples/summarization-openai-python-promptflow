@@ -115,10 +115,6 @@ def text_to_summary(ticket_text):
 # add main function that task string input as args and returns summary text string
 @tool
 def flow_entry(problem: str) -> str:
-    print("Processing input...")
     reported_issue = process_input(problem)
-    print("Summarizing input...")
     result = text_to_summary(reported_issue)
-    print("Summary complete!")
-    print("Summary: ", result)
     return result
