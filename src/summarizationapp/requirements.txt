@@ -1,6 +1,10 @@
-promptflow==1.10.0
 promptflow-tools==1.4.0
 azure-cognitiveservices-speech==1.37.0
 azure-identity==1.16.0
 python-dotenv==1.0.1
 ruff==0.0.47
+openai
+azure-identity
+promptflow[azure]
+aiohttp
+python-dotenv

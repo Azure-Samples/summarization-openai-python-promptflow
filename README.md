@@ -136,3 +136,7 @@ We recommend using keyless authentication for this project. Read more about why 
 - [Develop Python apps that use Azure AI services](https://learn.microsoft.com/azure/developer/python/azure-ai-for-python-developers)
 
 
+
+## UPDATED COMMANDS
+pf flow test --flow ./summarizationapp --inputs problem="data/audio-data/issue0.wav"
+pf flow test --flow ./summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"

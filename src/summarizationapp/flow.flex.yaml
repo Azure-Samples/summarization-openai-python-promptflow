@@ -1,0 +1,6 @@
+inputs:
+  problem:
+    type: string
+entry: speech_to_text:flow_entry
+environment:
+  python_requirements_txt: requirements.txt

@@ -5,21 +5,35 @@ import os
 import azure.cognitiveservices.speech as speechsdk
 from dotenv import load_dotenv
 from promptflow.core import (AzureOpenAIModelConfiguration,
-                             OpenAIModelConfiguration, Prompty)
+                             OpenAIModelConfiguration, Prompty, tool)
 
 # Load environment variables
 load_dotenv()
 # Change to logging.DEBUG for more verbose logging from Azure and OpenAI SDKs
 logging.basicConfig(level=logging.WARNING)
 
+from pathlib import Path
+folder = Path(__file__).parent.absolute().as_posix()
+
 if not os.getenv("OPENAI_HOST"):
     os.environ["OPENAI_HOST"] = "azure"
 
-def speech_to_text():
-    #for this example we will use a pre-recorded audio file so we set 
-    #use_default_microphone to False
-    use_default_microphone = False
-    filename = "../ticket-processing/data/audio-data/issue1.wav"
+def process_input(input: str = None):
+
+    # if input is non use existing file for testing
+    if input is None:
+        ticket_text = speech_to_text("/data/audio-data/issue1.wav")
+    else:
+    #check if input is an audio file or a string
+        if input.endswith('.wav'):
+            # process wav file if file is provided
+            ticket_text = speech_to_text(input)
+        else:
+            # if text is provided just send text to endpoint
+            ticket_text = input
+    return ticket_text
+
+def speech_to_text(filename: str = None, use_default_microphone: bool = False):
 
     speech_config = speechsdk.SpeechConfig(
         subscription=os.environ["SPEECH_KEY"], 
@@ -35,7 +49,7 @@ def speech_to_text():
         logging.info(f"Using the audio file: {filename}")
         audio_config = speechsdk.audio.AudioConfig(filename=filename)
 
-        
+
     speech_recognizer = speechsdk.SpeechRecognizer(
         speech_config=speech_config, audio_config=audio_config)
     speech_recognition_result = speech_recognizer.recognize_once_async().get()
@@ -92,12 +106,19 @@ def text_to_summary(ticket_text):
             "parameters": {"max_tokens": 512}
         }
 
-    prompty_obj = Prompty.load(
-        "../ticket-processing/summarize.prompty", model=override_model)
+    path_to_prompty = folder + "/summarize.prompty"
+    prompty_obj = Prompty.load(path_to_prompty, model=override_model)
     summary = prompty_obj(problem=ticket_text)
 
     return summary
 
-reported_issue = speech_to_text()
-result = text_to_summary(reported_issue)
-print(result)
+# add main function that task string input as args and returns summary text string
+@tool
+def flow_entry(problem: str) -> str:
+    print("Processing input...")
+    reported_issue = process_input(problem)
+    print("Summarizing input...")
+    result = text_to_summary(reported_issue)
+    print("Summary complete!")
+    print("Summary: ", result)
+    return result

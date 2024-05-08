@@ -1,6 +1,0 @@
-.env
-__pycache__/
-.promptflow/*
-!.promptflow/flow.tools.json
-.runs/
-.azure
