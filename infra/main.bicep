@@ -167,10 +167,9 @@ output AZURE_RESOURCE_GROUP string = rg.name
 output AZUREAI_HUB_NAME string = ai.outputs.hubName
 output AZUREAI_PROJECT_NAME string = ai.outputs.projectName
 output AZUREAI_ENDPOINT_NAME string = machineLearningEndpoint.outputs.name
-
 output AZURE_OPENAI_NAME string = ai.outputs.openAiName
 output AZURE_OPENAI_ENDPOINT string = ai.outputs.openAiEndpoint
-
+output AZURE_OPENAI_CHAT_DEPLOYMENT string = 'gpt-35-turbo'
 output AZURE_CONTAINER_REGISTRY_NAME string = ai.outputs.containerRegistryName
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = ai.outputs.containerRegistryEndpoint
 
