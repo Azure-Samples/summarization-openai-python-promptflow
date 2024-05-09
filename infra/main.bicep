@@ -40,7 +40,7 @@ param useAppInsights bool = true
 var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
-var aiConfig = loadYamlContent('./ai.yaml')
+var deploymentName =  'gpt-35-turbo'
 
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -62,7 +62,32 @@ module ai 'core/host/ai-environment.bicep' = {
       ? storageAccountName
       : '${abbrs.storageStorageAccounts}${resourceToken}'
     openAiName: !empty(openAiName) ? openAiName : 'aoai-${resourceToken}'
-    openAiModelDeployments: array(contains(aiConfig, 'deployments') ? aiConfig.deployments : [])
+    openAiModelDeployments: [
+      {
+        name: deploymentName
+        model: {
+          format: 'OpenAI'
+          name: deploymentName
+          version: '0613'
+        }
+        sku: {
+            name: 'Standard'
+            capacity: 20
+          }
+        }
+        {
+         name: 'text-embedding-ada-002'
+          model: {
+            format: 'OpenAI'
+            name: 'text-embedding-ada-002'
+            version: '2'
+          }
+          sku: {
+            name: 'Standard'
+            capacity: 20
+          }
+      }
+    ]
     logAnalyticsName: !useAppInsights
       ? ''
       : !empty(logAnalyticsWorkspaceName)
@@ -169,7 +194,7 @@ output AZUREAI_PROJECT_NAME string = ai.outputs.projectName
 output AZUREAI_ENDPOINT_NAME string = machineLearningEndpoint.outputs.name
 output AZURE_OPENAI_NAME string = ai.outputs.openAiName
 output AZURE_OPENAI_ENDPOINT string = ai.outputs.openAiEndpoint
-output AZURE_OPENAI_CHAT_DEPLOYMENT string = 'gpt-35-turbo'
+output AZURE_OPENAI_CHAT_DEPLOYMENT string = deploymentName
 output AZURE_CONTAINER_REGISTRY_NAME string = ai.outputs.containerRegistryName
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = ai.outputs.containerRegistryEndpoint
 
