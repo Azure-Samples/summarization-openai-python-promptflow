@@ -1,6 +1,6 @@
 promptflow-tools==1.4.0
 azure-identity==1.16.0
-ruff==0.0.47
+ruff==0.4.3
 openai
 azure-identity
 promptflow[azure]
