@@ -40,9 +40,8 @@ This project template provides the following features:
 * You will be able to use this app with Azure AI Studio
 
 ### Architecture Diagram
-Include a diagram describing the application (DevDiv is working with Designers on this part)
+![Architecture Digram](images\architecture-diagram-summarization-aistudio.png)
 
-Diagram should show: audio --> Text --> LLM + Prompty file --> Summary 
 
 ### Demo Video 
 (Embed demo video here)
