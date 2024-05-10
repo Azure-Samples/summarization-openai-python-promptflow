@@ -2,10 +2,12 @@
 import logging
 import os
 
-import azure.cognitiveservices.speech as speechsdk
+import azure.cognitiveservices.speech as speech
+from azure.identity import ManagedIdentityCredential, DefaultAzureCredential
 from dotenv import load_dotenv
 from promptflow.core import (AzureOpenAIModelConfiguration,
                              OpenAIModelConfiguration, Prompty, tool)
+
 
 # Load environment variables
 load_dotenv()
@@ -34,33 +36,48 @@ def process_input(input: str = None):
     return ticket_text
 
 def speech_to_text(filename: str = None, use_default_microphone: bool = False):
-
-    speech_config = speechsdk.SpeechConfig(
+    region=os.environ["SPEECH_RESOURCE_REGION"]
+    # Authenticate using an API key (not recommended for production)
+    if os.getenv("SPEECH_KEY"):
+        speech_config = speech.SpeechConfig(
         subscription=os.environ["SPEECH_KEY"], 
-        region=os.environ["SPEECH_REGION"])
+        region=region)
+    else:
+        # Authenticate using Managed Identity (recommended)
+        if client_id := os.getenv("AZURE_SPEECH_CLIENTID"):
+            # Authenticate using a user-assigned managed identity on Azure
+            azure_credential = ManagedIdentityCredential(
+            client_id=client_id)
+        else:
+            # Authenticate using the default Azure credential chain
+            azure_credential = DefaultAzureCredential(exclude_managed_identity_credential=True) 
+        access_token = azure_credential.get_token('https://cognitiveservices.azure.com/.default')
+        resourceId = os.environ["SPEECH_RESOURCE_ID"]
+        authorizationToken = "aad#" + resourceId + "#" + access_token.token
+        speech_config = speech.SpeechConfig(auth_token=authorizationToken, region=region)
     speech_config.speech_recognition_language="en-US"
 
     if use_default_microphone:
         logging.info("Using the default microphone.")
-        audio_config = speechsdk.audio.AudioConfig(
+        audio_config = speech.audio.AudioConfig(
             use_default_microphone=use_default_microphone)
         logging.info("Speak into your microphone.")
     else:
         logging.info(f"Using the audio file: {filename}")
-        audio_config = speechsdk.audio.AudioConfig(filename=filename)
+        audio_config = speech.audio.AudioConfig(filename=filename)
 
 
-    speech_recognizer = speechsdk.SpeechRecognizer(
+    speech_recognizer = speech.SpeechRecognizer(
         speech_config=speech_config, audio_config=audio_config)
     speech_recognition_result = speech_recognizer.recognize_once_async().get()
 
 
-    if speech_recognition_result.reason == speechsdk.ResultReason.RecognizedSpeech:
+    if speech_recognition_result.reason == speech.ResultReason.RecognizedSpeech:
         print("Speech to text succesful!")
         print('')
         print(f'Full report: {speech_recognition_result.text}')
         print('')
-    elif speech_recognition_result.reason == speechsdk.ResultReason.NoMatch:
+    elif speech_recognition_result.reason == speech.ResultReason.NoMatch:
         logging.warning(
             f'''
             No speech could be recognized: 
@@ -68,10 +85,10 @@ def speech_to_text(filename: str = None, use_default_microphone: bool = False):
             ''')
         logging.warning("No speech could be recognized.")
         exit(1)
-    elif speech_recognition_result.reason == speechsdk.ResultReason.Canceled:
+    elif speech_recognition_result.reason == speech.ResultReason.Canceled:
         cancellation_details = speech_recognition_result.cancellation_details
         logging.warning(f"Speech Recognition canceled: {cancellation_details.reason}")
-        if cancellation_details.reason == speechsdk.CancellationReason.Error:
+        if cancellation_details.reason == speech.CancellationReason.Error:
             logging.warning(f"Error details: {cancellation_details.error_details}")
             logging.warning("Did you set the speech resource key and region values?")
             logging.warning(
