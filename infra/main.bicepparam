@@ -19,3 +19,6 @@ param logAnalyticsWorkspaceName = readEnvironmentVariable('AZURE_LOG_ANALYTICS_W
 
 param useContainerRegistry = bool(readEnvironmentVariable('USE_CONTAINER_REGISTRY', 'true'))
 param useAppInsights = bool(readEnvironmentVariable('USE_APP_INSIGHTS', 'true'))
+
+param runningOnGh = readEnvironmentVariable('GITHUB_ACTIONS', '')
+param runningOnAdo = readEnvironmentVariable('TF_BUILD', '')

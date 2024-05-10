@@ -50,7 +50,7 @@ def speech_to_text(filename: str = None, use_default_microphone: bool = False):
             client_id=client_id)
         else:
             # Authenticate using the default Azure credential chain
-            azure_credential = DefaultAzureCredential(exclude_managed_identity_credential=True) 
+            azure_credential = DefaultAzureCredential() 
         access_token = azure_credential.get_token('https://cognitiveservices.azure.com/.default')
         resourceId = os.environ["SPEECH_RESOURCE_ID"]
         authorizationToken = "aad#" + resourceId + "#" + access_token.token

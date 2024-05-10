@@ -23,7 +23,7 @@ if [ -z "$resourceGroupName" ] || [ -z "$openAiService" ] || [ -z "$subscription
 fi
 
 # Retrieve the keys
-apiKey=$(az cognitiveservices account keys list --name $openAiService --resource-group $resourceGroupName --query key1 --output tsv)
+apiKey=$(az cognitiveservices  account keys list --name $openAiService --resource-group $resourceGroupName --subscription $subscriptionId --query key1 --output tsv)
 
 # Set the environment variables using azd env set
 azd env set AZURE_OPENAI_API_KEY $apiKey

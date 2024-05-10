@@ -36,6 +36,12 @@ param endpointServiceName string = 'chat'
 
 param useContainerRegistry bool = true
 param useAppInsights bool = true
+@description('Whether the deployment is running on GitHub Actions')
+param runningOnGh string = ''
+@description('Whether the deployment is running on Azure DevOps Pipeline')
+param runningOnAdo string = ''
+// USER ROLES
+var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
 
 var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
@@ -116,6 +122,20 @@ module machineLearningEndpoint './core/host/ml-online-endpoint.bicep' = {
   }
 }
 
+module speechRecognizer 'core/ai/cognitiveservices.bicep' = {
+  name: 'speechRecognizer'
+  scope: rg
+  params: {
+    name: 'cog-sp-${resourceToken}'
+    kind: 'SpeechServices'
+    location: location
+    tags: tags
+    sku: {
+      name: 'S0'
+    }
+  }
+}
+
 module keyVaultAccess 'core/security/keyvault-access.bicep' = {
   name: 'keyvault-access'
   scope: rg
@@ -135,6 +155,26 @@ module userAcrRolePush 'core/security/role.bicep' = {
   }
 }
 
+module userAcrRolePullBackend 'core/security/role.bicep' = {
+  name: 'user-acr-role-pull-backend'
+  scope: rg
+  params: {
+    principalId: ai.outputs.projectPrincipalId
+    roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+    principalType: 'ServicePrincipal'
+  }
+}
+
+module userAcrRolePushBackend 'core/security/role.bicep' = {
+  name: 'user-acr-role-push-backend'
+  scope: rg
+  params: {
+    principalId: ai.outputs.projectPrincipalId
+    roleDefinitionId: '8311e382-0749-4cb8-b61a-304f252e45ec'
+    principalType: 'ServicePrincipal'
+  }
+}
+
 module userAcrRolePull 'core/security/role.bicep' = {
   name: 'user-acr-role-pull'
   scope: rg
@@ -145,13 +185,53 @@ module userAcrRolePull 'core/security/role.bicep' = {
   }
 }
 
+module speechRoleBackend 'core/security/role.bicep' = {
+  scope: rg
+  name: 'speech-role-backend'
+  params: {
+    principalId: ai.outputs.projectPrincipalId
+    roleDefinitionId: 'f2dc8367-1007-4938-bd23-fe263f013447' //Cognitive Services Speech User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+module openaiRoleBackend 'core/security/role.bicep' = {
+  scope: rg
+  name: 'openai-role-backend'
+  params: {
+    principalId: ai.outputs.projectPrincipalId
+    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' //Cognitive Services OpenAI User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+module speechRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
+  scope: rg
+  name: 'speech-role-user'
+  params: {
+    principalId: principalId
+    roleDefinitionId: 'f2dc8367-1007-4938-bd23-fe263f013447' //Cognitive Services Speech User
+    principalType: principalType
+  }
+}
+
+module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
+  scope: rg
+  name: 'openai-role-user'
+  params: {
+    principalId: principalId
+    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' //Cognitive Services OpenAI User
+    principalType: principalType
+  }
+}
+
 module userRoleDataScientist 'core/security/role.bicep' = {
   name: 'user-role-data-scientist'
   scope: rg
   params: {
     principalId: principalId
     roleDefinitionId: 'f6c7c914-8db3-469d-8ca1-694a8f32e121'
-    principalType: 'User'
+    principalType: principalType
   }
 }
 
@@ -161,7 +241,7 @@ module userRoleSecretsReader 'core/security/role.bicep' = {
   params: {
     principalId: principalId
     roleDefinitionId: 'ea01e6af-a1c1-4350-9563-ad00f8c72ec5'
-    principalType: 'User'
+    principalType: principalType
   }
 }
 
@@ -206,3 +286,6 @@ output AZURE_STORAGE_ACCOUNT_ENDPOINT string = ai.outputs.storageAccountName
 
 output AZURE_APP_INSIGHTS_NAME string = ai.outputs.appInsightsName
 output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = ai.outputs.logAnalyticsWorkspaceName
+
+output AZURE_SPEECH_RESOURCE_ID string = speechRecognizer.outputs.id
+output AZURE_SPEECH_REGION string = location
