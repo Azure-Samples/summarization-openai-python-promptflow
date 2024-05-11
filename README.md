@@ -163,24 +163,7 @@ Start by connecting your Visual Studio Code environment to your Azure account:
 
 In either case, verify that the console shows a message indicating a successful authentication. **Congratulations! Your VS Code session is now connected to your Azure subscription!**
 
-### 2.2 Provision with Azure Developer CLI
-
-For this project, we need to provision multiple Azure resources. We'll use the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview) (or `azd`) and follow the steps below.
-Visit the [azd reference](https://learn.microsoft.com/azure/developer/azure-developer-cli/reference) for more details on tool syntax, commands and options.
-
-#### 2.2.1 Install `azd`
-- If you setup your development environment manually, follow [these instructions](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows) to install `azd` for your local device OS.
-- If you used a pre-built dev container environment (e.g., GitHub Codespaces or Docker Desktop) the tool is pre-installed for you.
-- Verify that the tool is installed by typing ```azd version``` in a terminal.
-
-#### 2.2.2 Authenticate with Azure
-- Start the authentication flow from a terminal:
-    ```bash
-    azd auth login
-    ```
-- This should activate a Device Code authentication flow as shown below. Just follow the instructions and complete the auth flow till you get the `Logged in on Azure` message indicating success.
-
-#### 2.2.3 Provision
+### 2.2 Provision with `provision.py`
 
 This sample contains a `provision.py` script which will help provision the resources you need to run this sample. You specify your desired resources in the provision.yaml - there are notes in that file to help you. The script will check whether the resources you specified exist, otherwise it will create them. 
 
@@ -194,50 +177,26 @@ You can provision the resources for your app by running the following command in
 python provision.py --config provision.yaml --export-env .env --provision
 ```
 
-### 2.4 Verify `.env` setup
+### 2.3 Verify `.env` setup
 
 The default sample has an `.env.sample` file that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
 
 If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure Portal and the Azure AI Studio (for the Azure OpenAI values)
-
-### 2.5 Verify local connections for Prompt Flow
-
-You will need to have your local Prompt Flow extension configured to have the following _connection_ objects set up:
- - `aoai-connection` to Azure OpenAI endpoint
-
-Verify if these were created by using the [pf tool](https://microsoft.github.io/promptflow/reference/pf-command-reference.html#pf-connection) from the VS Code terminal as follows:
-
-```bash
-pf connection list
-```
-
-If the connections are _not_ visible, create them by running the `connections/create-connections.ipynb` notebook. Then run the above command to verify they were created correctly.
-
-### 2.6 Verify cloud connections for Prompt Flow
-
-The auto-provisioning will have setup 2 of the 3 connections for you by default. First, verify this by
- - going to [Azure AI Studio](https://ai.azure.com)
- - signing in with your Azure account, then clicking "Build"
- - selecting the Azure AI project for this repo, from that list
- - clicking "Settings" in the sidebar for the project
- - clicking "View All" in the Connections panel in Settings
-
-You should see the `aoai-connection` pre-configured, else create them from the Azure AI Studio interface using the **Create Connection** workflow (and using the relevant values from your `.env` file).
 
 ## Step 3: Explore the `summarize.prompty` file
 
 This sample repository contains a summarize prompty file you can explore. In this sample we are telling the model to summarize the reports given by a worker in a specific format. 
 
 The prompty file contains the following:
-- The name, description and authors of the prompt
-- Details about the LLM model including:
+- The `name`, `description` and `authors` of the prompt
+- `configuration`: Details about the LLM model including:
   - api type: chat or completion
   - configuration: connection type (azure_openai or openai) and environment variables
   - model parametes: max_tokesn, temperature and response_format (text or json_object)
-- Inputs, where each input should have a type and default value
-- Outputs, where the output should have a type like string
-- Sample, a sample of the inputs to be provided
-- The prompt, in this sample we send a system message and have a user response at the bottom of the file
+- `inputs`: the content input from the user, where each input should have a type and can also have a default value
+- `outputs`: where the output should have a type like string
+- Sample Section: a sample of the inputs to be provided
+- The prompt: in this sample we send add a `system message` as the prompt with context and details about the format. We also add in a `user message` at the bottom of the file, which consists of the reported issue in text format from our user. 
 
 If you ran the provisioning step above correctly, all of the variables should already be set for you. You can edit the prompt to see what changes this makes to the summary created. 
 
