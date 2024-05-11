@@ -8,7 +8,7 @@ languages:
 - azdeveloper
 products:
 - azure-openai
-- azure-cognitive-search
+- azure-cognitive-speech-sdk
 - azure
 page_type: sample
 urlFragment: azure-search-openai-demo
