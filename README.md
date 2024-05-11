@@ -40,7 +40,7 @@ This project template provides the following features:
 * You will be able to use this app with Azure AI Studio
 
 ### Architecture Diagram
-![Architecture Digram](images\architecture-diagram-summarization-aistudio.png)
+![Architecture Digram]([images\architecture-diagram-summarization-aistudio.png](https://github.com/Azure-Samples/summarization-openai-python-promptflow/blob/main/images/architecture-diagram-summarization-aistudio.png))
 
 
 ### Demo Video 
