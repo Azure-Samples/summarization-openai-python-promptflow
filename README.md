@@ -1,5 +1,5 @@
 ---
-name: Ticket Processing with Azure AI
+name: Process Automation: Speech to Text and Summarization with AI Studio
 description: Process tickets automatically with .
 languages:
 - python
@@ -14,11 +14,11 @@ page_type: sample
 urlFragment: azure-search-openai-demo
 ---
 
-# Ticket Processing using Azure AI
+# Process Automation: Speech to Text and Summarization with AI Studio
 
 In this sample we recieve issues reported by field and shop floor workers at a company called Contoso Manufacturing, a manufacturing company that makes car batteries. The issues are shared by the workers either live through microphone input or pre-recorded as audio files. We translate the input from speech to text and then use an LLM and Prompty/Promptflow to summarize the issue and return the results in a format we specify.
 
-# Ticket Processing using Azure AI 
+# Process Automation: Speech to Text and Summarization with AI Studio
 
 This sample uses the **[Azure AI Speech Service](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/)** and **[Python SDk](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/quickstarts/setup-platform?pivots=programming-language-python&tabs=macos%2Cubuntu%2Cdotnetcli%2Cdotnet%2Cjre%2Cmaven%2Cnodejs%2Cmac%2Cvscode)** to translate the users speech into text. It leverages **[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)** to summarize the text and **[Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html)** to create, manage and evaluate the prompt into our code.
 
