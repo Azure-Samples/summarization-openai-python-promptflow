@@ -1,6 +1,6 @@
 ---
-name: Process Automation: Speech to Text and Summarization with AI Studio
-description: Process tickets automatically with .
+name: Process Automation - Speech to Text and Summarization with AI Studio
+description: Use Azure AI Studio for speech to text conversion and summarization with LLMs 
 languages:
 - python
 - typescript
