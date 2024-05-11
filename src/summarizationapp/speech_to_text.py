@@ -43,14 +43,8 @@ def speech_to_text(filename: str = None, use_default_microphone: bool = False):
         subscription=os.environ["SPEECH_KEY"], 
         region=region)
     else:
-        # Authenticate using Managed Identity (recommended)
-        if client_id := os.getenv("AZURE_SPEECH_CLIENTID"):
-            # Authenticate using a user-assigned managed identity on Azure
-            azure_credential = ManagedIdentityCredential(
-            client_id=client_id)
-        else:
-            # Authenticate using the default Azure credential chain
-            azure_credential = DefaultAzureCredential() 
+        # Authenticate using the default Azure credential chain
+        azure_credential = DefaultAzureCredential() 
         access_token = azure_credential.get_token('https://cognitiveservices.azure.com/.default')
         resourceId = os.environ["SPEECH_RESOURCE_ID"]
         authorizationToken = "aad#" + resourceId + "#" + access_token.token
