@@ -179,7 +179,7 @@ python provision.py --config provision.yaml --export-env .env --provision
 
 ### 2.3 Verify `.env` setup
 
-The default sample has an `.env.sample` file that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
+The default sample has a `.env.sample` file in the `summarizationapp` folder that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
 
 If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure Portal and the Azure AI Studio (for the Azure OpenAI values)
 
