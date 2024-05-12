@@ -36,7 +36,7 @@ def process_input(input: str = None):
     return ticket_text
 
 def speech_to_text(filename: str = None, use_default_microphone: bool = False):
-    region=os.environ["SPEECH_RESOURCE_REGION"]
+    region=os.environ["AZURE_SPEECH_REGION"]
     # Authenticate using an API key (not recommended for production)
     if os.getenv("SPEECH_KEY"):
         speech_config = speech.SpeechConfig(
@@ -46,7 +46,7 @@ def speech_to_text(filename: str = None, use_default_microphone: bool = False):
         # Authenticate using the default Azure credential chain
         azure_credential = DefaultAzureCredential() 
         access_token = azure_credential.get_token('https://cognitiveservices.azure.com/.default')
-        resourceId = os.environ["SPEECH_RESOURCE_ID"]
+        resourceId = os.environ["AZURE_SPEECH_RESOURCE_ID"]
         authorizationToken = "aad#" + resourceId + "#" + access_token.token
         speech_config = speech.SpeechConfig(auth_token=authorizationToken, region=region)
     speech_config.speech_recognition_language="en-US"
@@ -97,7 +97,6 @@ def text_to_summary(ticket_text):
     if os.getenv("OPENAI_HOST") == 'azure':
         configuration = AzureOpenAIModelConfiguration(
             azure_deployment=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT"],
-            api_key=os.environ["AZURE_OPENAI_API_KEY"],
             api_version=os.environ["AZURE_OPENAI_API_VERSION"],
             azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
         )
@@ -110,7 +109,6 @@ def text_to_summary(ticket_text):
         configuration = OpenAIModelConfiguration(
             model="gpt-35-turbo",
             base_url=os.environ["OPENAI_BASE_URL"],
-            api_key=os.environ["OPENAI_API_KEY"],
         )
         override_model = {
             "configuration": configuration,

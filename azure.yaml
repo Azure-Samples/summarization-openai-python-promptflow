@@ -36,5 +36,5 @@ services:
           environment_variables.AZURE_OPENAI_KEY: ${AZURE_OPENAI_KEY}
           environment_variables.AZURE_OPENAI_API_VERSION: ${AZURE_OPENAI_API_VERSION}
           environment_variables.AZURE_OPENAI_CHAT_DEPLOYMENT: ${AZURE_OPENAI_CHAT_DEPLOYMENT}
-          environment_variables.SPEECH_RESOURCE_REGION: ${AZURE_SPEECH_REGION}
-          environment_variables.SPEECH_RESOURCE_ID: ${AZURE_SPEECH_RESOURCE_ID}
+          environment_variables.AZURE_SPEECH_REGION: ${AZURE_SPEECH_REGION}
+          environment_variables.AZURE_SPEECH_RESOURCE_ID: ${AZURE_SPEECH_RESOURCE_ID}
