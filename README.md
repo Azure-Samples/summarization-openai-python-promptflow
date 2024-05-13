@@ -110,7 +110,7 @@ If all of the above are correctly installed you can set up your local developer 
    ```bash
    cd summarization-openai-python-promptflow
    code .
-   cd src
+   cd src/summarizationapp
    ```
 
 3. Install the [Prompt Flow Extension](https://marketplace.visualstudio.com/items?itemName=prompt-flow.prompt-flow) in VS Code
