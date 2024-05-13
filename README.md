@@ -36,16 +36,11 @@ This project template provides the following features:
 * Pre-recorded audio files in the `ticket-processing/data/` folder to use for testing the app.
 * `summarize.prompty` file where the prompt is constructed and edited.
 * `requirements.txt` file with all the python packages needed to run this example.
-* `provision.py` file to provision the resources needed to run this sample.
-* A `deploy.py` to automate the deploy process using AZD.
+* A bicep file to help provision and deploy your app using azd 
 * You will be able to use this app with Azure AI Studio
 
 ### Architecture Diagram
 ![Architecture Digram](https://github.com/Azure-Samples/summarization-openai-python-promptflow/blob/main/images/architecture-diagram-summarization-aistudio.png)
-
-
-### Demo Video 
-(Embed demo video here)
 
 ## Getting Started
 
@@ -55,7 +50,6 @@ This project template provides the following features:
 - **Visual Studio Code** - [Download it for free.](https://code.visualstudio.com/download)
 - **GitHub Account** - [Signup for a free account.](https://github.com/signup)
 - **Access to Azure Open AI Services** - [Learn about getting access.](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access)
-- **Ability to provision Azure AI Search (Paid)** - Required for Semantic Ranker
 
 ## Step 1: Development Environment
 
