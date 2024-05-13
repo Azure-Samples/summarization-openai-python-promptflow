@@ -73,7 +73,7 @@ To setup the development environment you can leverage either GitHub Codespaces, 
 
 This should open a new browser tab with a Codespaces container setup process running. On completion, this will launch a Visual Studio Code editor in the browser, with all relevant dependencies already installed in the running development container beneath. **Congratulations! Your cloud dev environment is ready!**
 
-- Once you've launched Codespaces you can proceed to [step 2](#Step-2:-Create-Azure-resources).
+- Once you've launched Codespaces you can proceed to [step 2](#step-2-create-azure-resources).
 
 ### Step 1.2: Pre-Built Environment, on device (Docker Desktop)
 
