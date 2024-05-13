@@ -163,6 +163,7 @@ In either case, verify that the console shows a message indicating a successful 
     ```bash
     azd up
     ```
+    When prompted to pick a region, we recommend selecting `Sweden Central`. 
 - On completion, it automatically invokes a`postprovision.sh` script that will attempt to log you into Azure. You may see something like this. Follow the provided instructions to complete the authentication flow.
     ```bash
     No Azure user signed in. Please login.
