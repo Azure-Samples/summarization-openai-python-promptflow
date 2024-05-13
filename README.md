@@ -153,7 +153,7 @@ We setup our development ennvironment in the previous step. In this step, we'll 
 Start by connecting your Visual Studio Code environment to your Azure account:
 
 1. Open the terminal in VS Code and use command `az login`. 
-2. Complete the authentication flow.
+2. - This should activate a Device Code authentication flow. Follow the instructions and complete the auth flow till you get the `Logged in on Azure` message indicating success.
 
 **If you are running within a dev container, use these instructions to login instead:**
  1. Open the terminal in VS Code and use command `az login --use-device-code`
@@ -163,25 +163,43 @@ Start by connecting your Visual Studio Code environment to your Azure account:
 
 In either case, verify that the console shows a message indicating a successful authentication. **Congratulations! Your VS Code session is now connected to your Azure subscription!**
 
-### 2.2 Provision with `provision.py`
+#### 2.2.3 Provision and Deploy 
 
-This sample contains a `provision.py` script which will help provision the resources you need to run this sample. You specify your desired resources in the provision.yaml - there are notes in that file to help you. The script will check whether the resources you specified exist, otherwise it will create them. 
+- Run this unified command to provision all resources. This will take a non-trivial amount of time to complete.
+    ```bash
+    azd up
+    ```
+- On completion, it automatically invokes a`postprovision.sh` script that will attempt to log you into Azure. You may see something like this. Follow the provided instructions to complete the authentication flow.
+    ```bash
+    No Azure user signed in. Please login.
+    ```
+- Once logged in, the script will do the following for you:
+    - Download `config.json` to the local device
+    - Populate `.env` with required environment variables
+    - Populate your data (in Azure AI Search, Azure CosmosDB)
+    - Create relevant Connections (for prompt flow)
+    - Upload your prompt flow to Azure (for deployment)
 
-A `.env` file will be created for you that references the provisioned or attached resources, including your keys. Once the provisioning is complete, you'll be ready to move to [step 3]().
+That's it! You should now be ready to continue the process as before. Note that this is a new process so there may be some issues to iron out. Start by completing the verification steps below and taking any troubleshooting actions identified.
 
-❕ Important: If you are viewing this README from within the cloud VS Code environment, the provisioning script will already have your subscription, hub and project details, and will extract other existing resources to set up your environment.
+#### 2.2.4 Verify Provisioning
 
-You can provision the resources for your app by running the following command in your terminal.
+The script should **set up a dedicated resource group** with the **Azure AI services** resource. 
 
-```bash
-python provision.py --config provision.yaml --export-env .env --provision
-```
+The script will set up an **Azure AI Studio** project with the following model deployments created by default, in a relevant region that supports them. _Your Azure subscription must be [enabled for Azure OpenAI access](https://learn.microsoft.com/azure/ai-services/openai/overview#how-do-i-get-access-to-azure-openai)_.
+ - gpt-3.5-turbo
 
-### 2.3 Verify `.env` setup
+### 2.3 Verify `config.json` setup
 
-The default sample has a `.env.sample` file in the `summarizationapp` folder that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
+The script should automatically create a `config.json` in your root directory, with the relevant Azure subscription, resource group, and AI workspace properties defined. _These will be made use of by the Azure AI SDK for relevant API interactions with the Azure AI platform later_.
 
-If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure Portal and the Azure AI Studio (for the Azure OpenAI values)
+If the config.json file is not created, download it from your Azure portal by visiting the _Azure AI project_ resource created, and looking at its Overview page.
+
+### 2.4 Verify `.env` setup
+
+The default sample has an `.env.sample` file in the `summarizationapp` folder that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
+
+If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure AI Studio (for the Azure OpenAI values). 
 
 ## Step 3: Explore the `summarize.prompty` file
 
@@ -214,25 +232,47 @@ Testing with sample text data:
 pf flow test --flow ./summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
 ```
 
-To understand how the code works look through the `speech_to_text.py` file or watch the [demo video]() for a detailed walk through. 
+To understand how the code works look through the `speech_to_text.py` file. 
 
-## Step 4: Deploy application to AI Studio
+## 4. Deployment with SDK
 
-Use the deployment script to deploy your application to Azure AI Studio. This will deploy your app to a managed endpoint in Azure, that you can test, integrate into a front end application, or share with others. Replace `<deployment_name>` with a deployment name of your choice. 
+At this point, we've built, run, and evaluated, the prompt flow **locally** in our Visual Studio Code environment. We are now ready to deploy the prompt flow to a hosted endpoint on Azure, allowing others to use that endpoint to send _user questions_ and receive relevant responses.
 
-``` bash
-python deploy.py --deployment-name <deployment_name>
+This process consists of the following steps:
+ 1. We push the prompt flow to Azure (effectively uploading flow assets to Azure AI Studio)
+ 2. We activate an automatic runtime and run the uploaded flow once, to verify it works.
+ 3. We deploy the flow, triggering a series of actions that results in a hosted endpoint.
+ 4. We can now use built-in tests on Azure AI Studio to validate the endpoint works as desired.
+
+Just follow the instructions and steps in the notebook `push_and_deploy_pf.ipynb` under the `deployment` folder. Once this is done, the deployment endpoint and key can be used in any third-party application to _integrate_ with the deployed flow for real user experiences.
+
+
+## 5. Deploy with GitHub Actions
+
+### 5.1. Create Connection to Azure in GitHub
+- Login to [Azure Shell](https://shell.azure.com/)
+- Follow the instructions to [create a service principal here](hhttps://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#create-azure-service-principal)
+- Follow the [instructions in steps 1 - 8  here](https://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#steps) to add create and add the user-assigned managed identity to the subscription and workspace.
+
+- Assign `Data Science Role` and the `Azure Machine Learning Workspace Connection Secrets Reader` to the service principal. Complete this step in the portal under the IAM.
+- Setup authentication with Github [here](https://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#set-up-authentication-with-azure-and-github)
+
+```bash
+{
+  "clientId": <GUID>,
+  "clientSecret": <GUID>,
+  "subscriptionId": <GUID>,
+  "tenantId": <GUID>
+}
 ```
+- Add `SUBSCRIPTION` (this is the subscription) , `GROUP` (this is the resource group name), `WORKSPACE` (this is the project name), and `KEY_VAULT_NAME` to GitHub.
 
-## Step 5: Verify your deployment
+### 5.2. Create a custom environment for endpoint
+- Follow the instructions to create a custom env with the packages needed [here](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-environments-in-studio?view=azureml-api-2#create-an-environment)
+  - Select the `upload existing docker` option 
+  - Upload from the folder `runtime\docker`
 
-We recommend you follow the deployment link from the previous step to the test your application in the Azure AI Studio. If you prefer to test your endpoint locally, you can invoke it.
-
-``` bash
-python invoke.py --deployment-name <deployment_name>
-```
-
-Add the `--stream` argument if you want the response to be streamed.
+- Update the deployment.yml image to the newly created environemnt. You can find the name under `Azure container registry` in the environment details page.
 
 
 ## Contributing
@@ -248,13 +288,3 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
-
-
