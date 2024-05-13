@@ -11,7 +11,7 @@ products:
 - azure-cognitive-speech-sdk
 - azure
 page_type: sample
-urlFragment: azure-search-openai-demo
+urlFragment: summarization-openai-python-promptflow
 ---
 
 # Process Automation: Speech to Text and Summarization with AI Studio
