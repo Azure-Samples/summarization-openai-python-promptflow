@@ -51,6 +51,22 @@ This project template provides the following features:
 - **GitHub Account** - [Signup for a free account.](https://github.com/signup)
 - **Access to Azure Open AI Services** - [Learn about getting access.](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access)
 
+**IMPORTANT:** In order to deploy and run this example, you'll need:
+
+* **Azure subscription with access enabled for the Azure OpenAI service**. You can request access with [this form](https://aka.ms/oaiapply).
+    - Ability to deploy these models - `gpt-35-turbo`, `gpt-4`, `text-embeddings-ada-002`
+    - We recommend using Sweden Central or East US 2
+* **Azure account permissions**:
+  * Your Azure account must have `Microsoft.Authorization/roleAssignments/write` permissions, such as [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator), or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner). If you don't have subscription-level permissions, you must be granted [RBAC](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview) for an existing resource group and [deploy to that existing group](docs/deploy_existing.md#resource-group).
+  * Your Azure account also needs `Microsoft.Resources/deployments/write` permissions on the subscription level.
+
+### AZD
+- **Install [azd](https://aka.ms/install-azd)**
+    - Windows: `winget install microsoft.azd`
+    - Linux: `curl -fsSL https://aka.ms/install-azd.sh | bash`
+    - MacOS: `brew tap azure/azd && brew install azd`
+
+
 ## Step 1: Development Environment
 
 The repository is instrumented with a `devcontainer.json` configuration that can provide you with a _pre-built_ environment that can be launched locally, or in the cloud. You can also elect to do a _manual_ environment setup locally, if desired. Here are the three options in increasing order of complexity and effort on your part. **Pick one!**
@@ -136,35 +152,30 @@ If all of the above are correctly installed you can set up your local developer 
         python3 -m venv .venv
         source .venv/bin/activate
         pip install -r requirements.txt
-        ```
+        
+### 1.4 Install `azd` and deploy with `azd up`
+- If you setup your development environment manually, follow [these instructions](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows) to install `azd` for your local device OS.
+- If you used a pre-built dev container environment (e.g., GitHub Codespaces or Docker Desktop) the tool is pre-installed for you.
+- Verify that the tool is installed by typing ```azd version``` in a terminal.
 
-## Step 2: Create Azure resources
+#### Authenticate with Azure
+- Start the authentication flow from a terminal:
+    ```bash
+    azd auth login
+    ```
+- This should activate a Device Code authentication flow as shown below. Just follow the instructions and complete the auth flow till you get the `Logged in on Azure` message indicating success.
+    ```bash
+    Start by copying the next code: <code-here>
+    Then press enter and continue to log in from your browser...
+    ```
 
-We setup our development ennvironment in the previous step. In this step, we'll **provision Azure resources** for our project, ready to use for developing our LLM Application.
-
-### 2.1 Authenticate with Azure
-
-Start by connecting your Visual Studio Code environment to your Azure account:
-
-1. Open the terminal in VS Code and use command `az login`. 
-2. - This should activate a Device Code authentication flow. Follow the instructions and complete the auth flow till you get the `Logged in on Azure` message indicating success.
-
-**If you are running within a dev container, use these instructions to login instead:**
- 1. Open the terminal in VS Code and use command `az login --use-device-code`
- 1. The console message will give you an alphanumeric code
- 1. Navigate to _https://microsoft.com/devicelogin_ in a new tab
- 1. Enter the code from step 2 and complete the flow.
-
-In either case, verify that the console shows a message indicating a successful authentication. **Congratulations! Your VS Code session is now connected to your Azure subscription!**
-
-#### 2.2.3 Provision and Deploy 
-
-- Run this unified command to provision all resources. This will take a non-trivial amount of time to complete. If you are running in Codespaces run `azd auth login` before `azd up`
+- Run this unified command to provision all resources. This will take a non-trivial amount of time to complete.
     ```bash
     azd up
     ```
-    When prompted to pick a region, we recommend selecting `Sweden Central`. 
-- On completion, it automatically invokes a`postprovision.sh` script that will attempt to log you into Azure. You may see something like this. Follow the provided instructions to complete the authentication flow.
+- You will be prompted for the subscription you want you use and the region. The bicep parameters declare two location fields: the first one is the primary location for all resources, the second is a location field specifically for where the OpenAI resource should be created.
+
+- On completion, it automatically invokes a`postprovision.sh` script that will attempt to log you into Azure. You may see something like this. Just follow the provided instructions to complete the authentication flow.
     ```bash
     No Azure user signed in. Please login.
     ```
@@ -177,26 +188,22 @@ In either case, verify that the console shows a message indicating a successful 
 
 That's it! You should now be ready to continue the process as before. Note that this is a new process so there may be some issues to iron out. Start by completing the verification steps below and taking any troubleshooting actions identified.
 
-#### 2.2.4 Verify Provisioning
+#### Verify Provisioning
 
-The script should **set up a dedicated resource group** with the **Azure AI services** resource. 
+The script should **set up a dedicated resource group** with the following resources:
 
-The script will set up an **Azure AI Studio** project with the following model deployments created by default, in a relevant region that supports them. _Your Azure subscription must be [enabled for Azure OpenAI access](https://learn.microsoft.com/azure/ai-services/openai/overview#how-do-i-get-access-to-azure-openai)_.
- - gpt-3.5-turbo
+ - **Azure AI services** resource
+ - **Azure Container app** resource
+ - **Azure Open AI Service** resource
+ - **Azure Speech to Text** resource
 
-### 2.3 Verify `config.json` setup
-
-The script should automatically create a `config.json` in your root directory, with the relevant Azure subscription, resource group, and AI workspace properties defined. _These will be made use of by the Azure AI SDK for relevant API interactions with the Azure AI platform later_.
-
-If the config.json file is not created, download it from your Azure portal by visiting the _Azure AI project_ resource created, and looking at its Overview page.
-
-### 2.4 Verify `.env` setup
+#### Verify `.env` setup
 
 The default sample has an `.env.sample` file in the `summarizationapp` folder that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
 
 If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure AI Studio (for the Azure OpenAI values). 
 
-## Step 3: Explore the `summarize.prompty` file
+## Step 2: Explore the `summarize.prompty` file
 
 This sample repository contains a summarize prompty file you can explore. In this sample we are telling the model to summarize the reports given by a worker in a specific format. 
 
@@ -228,46 +235,6 @@ pf flow test --flow ./src/summarizationapp --inputs problem="I need to open a pr
 ```
 
 To understand how the code works look through the `speech_to_text.py` file. 
-
-## 4. Deployment with SDK
-
-At this point, we've built, run, and evaluated, the prompt flow **locally** in our Visual Studio Code environment. We are now ready to deploy the prompt flow to a hosted endpoint on Azure, allowing others to use that endpoint to send _user questions_ and receive relevant responses.
-
-This process consists of the following steps:
- 1. We push the prompt flow to Azure (effectively uploading flow assets to Azure AI Studio)
- 2. We activate an automatic runtime and run the uploaded flow once, to verify it works.
- 3. We deploy the flow, triggering a series of actions that results in a hosted endpoint.
- 4. We can now use built-in tests on Azure AI Studio to validate the endpoint works as desired.
-
-Just follow the instructions and steps in the notebook `push_and_deploy_pf.ipynb` under the `deployment` folder. Once this is done, the deployment endpoint and key can be used in any third-party application to _integrate_ with the deployed flow for real user experiences.
-
-
-## 5. Deploy with GitHub Actions
-
-### 5.1. Create Connection to Azure in GitHub
-- Login to [Azure Shell](https://shell.azure.com/)
-- Follow the instructions to [create a service principal here](hhttps://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#create-azure-service-principal)
-- Follow the [instructions in steps 1 - 8  here](https://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#steps) to add create and add the user-assigned managed identity to the subscription and workspace.
-
-- Assign `Data Science Role` and the `Azure Machine Learning Workspace Connection Secrets Reader` to the service principal. Complete this step in the portal under the IAM.
-- Setup authentication with Github [here](https://github.com/microsoft/llmops-promptflow-template/blob/main/docs/github_workflows_how_to_setup.md#set-up-authentication-with-azure-and-github)
-
-```bash
-{
-  "clientId": <GUID>,
-  "clientSecret": <GUID>,
-  "subscriptionId": <GUID>,
-  "tenantId": <GUID>
-}
-```
-- Add `SUBSCRIPTION` (this is the subscription) , `GROUP` (this is the resource group name), `WORKSPACE` (this is the project name), and `KEY_VAULT_NAME` to GitHub.
-
-### 5.2. Create a custom environment for endpoint
-- Follow the instructions to create a custom env with the packages needed [here](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-environments-in-studio?view=azureml-api-2#create-an-environment)
-  - Select the `upload existing docker` option 
-  - Upload from the folder `runtime\docker`
-
-- Update the deployment.yml image to the newly created environemnt. You can find the name under `Azure container registry` in the environment details page.
 
 ## Contributing
 
