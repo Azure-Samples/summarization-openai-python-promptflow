@@ -43,10 +43,6 @@ This project template provides the following features:
 ### Architecture Diagram
 ![Architecture Digram](https://github.com/Azure-Samples/summarization-openai-python-promptflow/blob/main/images/architecture-diagram-summarization-aistudio.png)
 
-
-### Demo Video 
-(Embed demo video here)
-
 ## Getting Started
 
 ### Prerequisites
@@ -56,6 +52,22 @@ This project template provides the following features:
 - **GitHub Account** - [Signup for a free account.](https://github.com/signup)
 - **Access to Azure Open AI Services** - [Learn about getting access.](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access)
 - **Ability to provision Azure AI Search (Paid)** - Required for Semantic Ranker
+
+**IMPORTANT:** In order to deploy and run this example, you'll need:
+
+* **Azure subscription with access enabled for the Azure OpenAI service**. You can request access with [this form](https://aka.ms/oaiapply).
+    - Ability to deploy these models - `gpt-35-turbo`, `gpt-4`, `text-embeddings-ada-002`
+    - We recommend using Sweden Central or East US 2
+* **Azure account permissions**:
+  * Your Azure account must have `Microsoft.Authorization/roleAssignments/write` permissions, such as [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator), or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner). If you don't have subscription-level permissions, you must be granted [RBAC](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview) for an existing resource group and [deploy to that existing group](docs/deploy_existing.md#resource-group).
+  * Your Azure account also needs `Microsoft.Resources/deployments/write` permissions on the subscription level.
+
+### AZD
+- **Install [azd](https://aka.ms/install-azd)**
+    - Windows: `winget install microsoft.azd`
+    - Linux: `curl -fsSL https://aka.ms/install-azd.sh | bash`
+    - MacOS: `brew tap azure/azd && brew install azd`
+
 
 ## Step 1: Development Environment
 
@@ -142,40 +154,49 @@ If all of the above are correctly installed you can set up your local developer 
         python3 -m venv .venv
         source .venv/bin/activate
         pip install -r requirements.txt
-        ```
+### 1.4 Install `azd` and deploy with `azd up`
+- If you setup your development environment manually, follow [these instructions](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows) to install `azd` for your local device OS.
+- If you used a pre-built dev container environment (e.g., GitHub Codespaces or Docker Desktop) the tool is pre-installed for you.
+- Verify that the tool is installed by typing ```azd version``` in a terminal.
 
-## Step 2: Create Azure resources
+#### Authenticate with Azure
+- Start the authentication flow from a terminal:
+    ```bash
+    azd auth login
+    ```
+- This should activate a Device Code authentication flow as shown below. Just follow the instructions and complete the auth flow till you get the `Logged in on Azure` message indicating success.
+    ```bash
+    Start by copying the next code: <code-here>
+    Then press enter and continue to log in from your browser...
+    ```
 
-We setup our development ennvironment in the previous step. In this step, we'll **provision Azure resources** for our project, ready to use for developing our LLM Application.
+- Run this unified command to provision all resources. This will take a non-trivial amount of time to complete.
+    ```bash
+    azd up
+    ```
+- You will be prompted for the subscription you want you use and the region. The bicep parameters declare two location fields: the first one is the primary location for all resources, the second is a location field specifically for where the OpenAI resource should be created.
 
-### 2.1 Authenticate with Azure
+- On completion, it automatically invokes a`postprovision.sh` script that will attempt to log you into Azure. You may see something like this. Just follow the provided instructions to complete the authentication flow.
+    ```bash
+    No Azure user signed in. Please login.
+    ```
+- Once logged in, the script will do the following for you:
+    - Download `config.json` to the local device
+    - Populate `.env` with required environment variables
+    - Populate your data (in Azure AI Search, Azure CosmosDB)
+    - Create relevant Connections (for prompt flow)
+    - Upload your prompt flow to Azure (for deployment)
 
-Start by connecting your Visual Studio Code environment to your Azure account:
+That's it! You should now be ready to continue the process as before. Note that this is a new process so there may be some issues to iron out. Start by completing the verification steps below and taking any troubleshooting actions identified.
 
-1. Open the terminal in VS Code and use command `az login`. 
-2. Complete the authentication flow.
+#### 2.2.4 Verify Provisioning
 
-**If you are running within a dev container, use these instructions to login instead:**
- 1. Open the terminal in VS Code and use command `az login --use-device-code`
- 1. The console message will give you an alphanumeric code
- 1. Navigate to _https://microsoft.com/devicelogin_ in a new tab
- 1. Enter the code from step 2 and complete the flow.
+The script should **set up a dedicated resource group** with the following resources:
 
-In either case, verify that the console shows a message indicating a successful authentication. **Congratulations! Your VS Code session is now connected to your Azure subscription!**
-
-### 2.2 Provision with `provision.py`
-
-This sample contains a `provision.py` script which will help provision the resources you need to run this sample. You specify your desired resources in the provision.yaml - there are notes in that file to help you. The script will check whether the resources you specified exist, otherwise it will create them. 
-
-A `.env` file will be created for you that references the provisioned or attached resources, including your keys. Once the provisioning is complete, you'll be ready to move to [step 3]().
-
-❕ Important: If you are viewing this README from within the cloud VS Code environment, the provisioning script will already have your subscription, hub and project details, and will extract other existing resources to set up your environment.
-
-You can provision the resources for your app by running the following command in your terminal.
-
-```bash
-python provision.py --config provision.yaml --export-env .env --provision
-```
+ - **Azure AI services** resource
+ - **Azure Container app** resource
+ - **Azure Open AI Service** resource
+ - **Azure Speech to Text** resource
 
 ### 2.3 Verify `.env` setup
 
@@ -214,26 +235,7 @@ Testing with sample text data:
 pf flow test --flow ./summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
 ```
 
-To understand how the code works look through the `speech_to_text.py` file or watch the [demo video]() for a detailed walk through. 
-
-## Step 4: Deploy application to AI Studio
-
-Use the deployment script to deploy your application to Azure AI Studio. This will deploy your app to a managed endpoint in Azure, that you can test, integrate into a front end application, or share with others. Replace `<deployment_name>` with a deployment name of your choice. 
-
-``` bash
-python deploy.py --deployment-name <deployment_name>
-```
-
-## Step 5: Verify your deployment
-
-We recommend you follow the deployment link from the previous step to the test your application in the Azure AI Studio. If you prefer to test your endpoint locally, you can invoke it.
-
-``` bash
-python invoke.py --deployment-name <deployment_name>
-```
-
-Add the `--stream` argument if you want the response to be streamed.
-
+To understand how the code works look through the `speech_to_text.py` file. 
 
 ## Contributing
 
