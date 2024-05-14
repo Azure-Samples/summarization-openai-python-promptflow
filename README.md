@@ -159,7 +159,7 @@ In either case, verify that the console shows a message indicating a successful 
 
 #### 2.2.3 Provision and Deploy 
 
-- Run this unified command to provision all resources. This will take a non-trivial amount of time to complete.
+- Run this unified command to provision all resources. This will take a non-trivial amount of time to complete. If you are running in code spaces run `azd auth login` before `azd up`
     ```bash
     azd up
     ```
