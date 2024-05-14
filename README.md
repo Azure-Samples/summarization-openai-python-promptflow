@@ -153,7 +153,7 @@ If all of the above are correctly installed you can set up your local developer 
         source .venv/bin/activate
         pip install -r requirements.txt
         
-### 1.4 Install `azd` and deploy with `azd up`
+## Step 2: Install `azd` and deploy with `azd up`
 - If you setup your development environment manually, follow [these instructions](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows) to install `azd` for your local device OS.
 - If you used a pre-built dev container environment (e.g., GitHub Codespaces or Docker Desktop) the tool is pre-installed for you.
 - Verify that the tool is installed by typing ```azd version``` in a terminal.
@@ -203,7 +203,7 @@ The default sample has an `.env.sample` file in the `summarizationapp` folder th
 
 If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure AI Studio (for the Azure OpenAI values). 
 
-## Step 2: Explore the `summarize.prompty` file
+## Step 3: Explore the `summarize.prompty` file
 
 This sample repository contains a summarize prompty file you can explore. In this sample we are telling the model to summarize the reports given by a worker in a specific format. 
 
