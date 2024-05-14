@@ -219,12 +219,12 @@ This repository contains sample data to be able to test the project end to end. 
 
 Testing with sample audio data: 
 ``` bash
-pf flow test --flow ./summarizationapp --inputs problem="data/audio-data/issue0.wav"
+pf flow test --flow ./src/summarizationapp --inputs problem="data/audio-data/issue0.wav"
 ```
 
 Testing with sample text data:
 ``` bash
-pf flow test --flow ./summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
+pf flow test --flow ./src/summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
 ```
 
 To understand how the code works look through the `speech_to_text.py` file. 
