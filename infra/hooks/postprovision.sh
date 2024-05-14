@@ -37,4 +37,4 @@ azd env get-values > ./src/summarizationapp/.env
 echo "Script execution completed successfully."
 
 echo 'Installing dependencies from "requirements.txt"'
-python -m pip install -r src/summarizationapp/requirements.txt
+python3 -m pip install -r ./src/summarizationapp/requirements.txt

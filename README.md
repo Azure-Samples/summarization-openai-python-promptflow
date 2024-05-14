@@ -11,7 +11,7 @@ products:
 - azure-cognitive-speech-sdk
 - azure
 page_type: sample
-urlFragment: azure-search-openai-demo
+urlFragment: summarization-openai-python-promptflow
 ---
 
 # Process Automation: Speech to Text and Summarization with AI Studio
@@ -36,8 +36,7 @@ This project template provides the following features:
 * Pre-recorded audio files in the `ticket-processing/data/` folder to use for testing the app.
 * `summarize.prompty` file where the prompt is constructed and edited.
 * `requirements.txt` file with all the python packages needed to run this example.
-* `provision.py` file to provision the resources needed to run this sample.
-* A `deploy.py` to automate the deploy process using AZD.
+* A bicep file to help provision and deploy your app using azd 
 * You will be able to use this app with Azure AI Studio
 
 ### Architecture Diagram
@@ -51,7 +50,6 @@ This project template provides the following features:
 - **Visual Studio Code** - [Download it for free.](https://code.visualstudio.com/download)
 - **GitHub Account** - [Signup for a free account.](https://github.com/signup)
 - **Access to Azure Open AI Services** - [Learn about getting access.](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access)
-- **Ability to provision Azure AI Search (Paid)** - Required for Semantic Ranker
 
 **IMPORTANT:** In order to deploy and run this example, you'll need:
 
@@ -91,7 +89,7 @@ To setup the development environment you can leverage either GitHub Codespaces, 
 
 This should open a new browser tab with a Codespaces container setup process running. On completion, this will launch a Visual Studio Code editor in the browser, with all relevant dependencies already installed in the running development container beneath. **Congratulations! Your cloud dev environment is ready!**
 
-- Once you've launched Codespaces you can proceed to [step 2]().
+- Once you've launched Codespaces you can proceed to [step 2](#step-2-create-azure-resources).
 
 ### Step 1.2: Pre-Built Environment, on device (Docker Desktop)
 
@@ -128,7 +126,7 @@ If all of the above are correctly installed you can set up your local developer 
    ```bash
    cd summarization-openai-python-promptflow
    code .
-   cd src
+   cd src/summarizationapp
    ```
 
 3. Install the [Prompt Flow Extension](https://marketplace.visualstudio.com/items?itemName=prompt-flow.prompt-flow) in VS Code
@@ -154,6 +152,7 @@ If all of the above are correctly installed you can set up your local developer 
         python3 -m venv .venv
         source .venv/bin/activate
         pip install -r requirements.txt
+        
 ### 1.4 Install `azd` and deploy with `azd up`
 - If you setup your development environment manually, follow [these instructions](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows) to install `azd` for your local device OS.
 - If you used a pre-built dev container environment (e.g., GitHub Codespaces or Docker Desktop) the tool is pre-installed for you.
@@ -200,9 +199,9 @@ The script should **set up a dedicated resource group** with the following resou
 
 #### Verify `.env` setup
 
-The default sample has a `.env.sample` file in the `summarizationapp` folder that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
+The default sample has an `.env.sample` file in the `summarizationapp` folder that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
 
-If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure Portal and the Azure AI Studio (for the Azure OpenAI values)
+If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure AI Studio (for the Azure OpenAI values). 
 
 ## Step 2: Explore the `summarize.prompty` file
 
@@ -227,12 +226,12 @@ This repository contains sample data to be able to test the project end to end. 
 
 Testing with sample audio data: 
 ``` bash
-pf flow test --flow ./summarizationapp --inputs problem="data/audio-data/issue0.wav"
+pf flow test --flow ./src/summarizationapp --inputs problem="data/audio-data/issue0.wav"
 ```
 
 Testing with sample text data:
 ``` bash
-pf flow test --flow ./summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
+pf flow test --flow ./src/summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
 ```
 
 To understand how the code works look through the `speech_to_text.py` file. 
@@ -247,16 +246,16 @@ When you submit a pull request, a CLA bot will automatically determine whether y
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
 provided by the bot. You will only need to do this once across all repos using our CLA.
 
+## Microsoft Open Source Code of Conduct
+
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+
+Resources:
+
+- [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/)
+- [Microsoft Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
+- Contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with questions or concerns
+
+
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
-
-
