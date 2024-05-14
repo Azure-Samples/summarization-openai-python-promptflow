@@ -189,7 +189,7 @@ If all of the above are correctly installed you can set up your local developer 
 
 That's it! You should now be ready to continue the process as before. Note that this is a new process so there may be some issues to iron out. Start by completing the verification steps below and taking any troubleshooting actions identified.
 
-#### 2.2.4 Verify Provisioning
+#### Verify Provisioning
 
 The script should **set up a dedicated resource group** with the following resources:
 
@@ -198,7 +198,7 @@ The script should **set up a dedicated resource group** with the following resou
  - **Azure Open AI Service** resource
  - **Azure Speech to Text** resource
 
-### 2.3 Verify `.env` setup
+#### Verify `.env` setup
 
 The default sample has a `.env.sample` file in the `summarizationapp` folder that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
 
