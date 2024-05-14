@@ -204,7 +204,7 @@ The default sample has a `.env.sample` file in the `summarizationapp` folder tha
 
 If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure Portal and the Azure AI Studio (for the Azure OpenAI values)
 
-## Step 3: Explore the `summarize.prompty` file
+## Step 2: Explore the `summarize.prompty` file
 
 This sample repository contains a summarize prompty file you can explore. In this sample we are telling the model to summarize the reports given by a worker in a specific format. 
 
