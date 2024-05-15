@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/wabrez/ai-service-targets/schemas/alpha/azure.yaml.json
-name: azd-aistudio-summarization
+name: summarization-openai-python-promptflow
 metadata:
-  template: azd-aistudio-summarization@0.0.1-beta
+  template: summarization-openai-python-promptflow@0.0.1-beta
 hooks:
   postprovision:
     posix:
