@@ -26,9 +26,9 @@ urlFragment: summarization-openai-python-promptflow
 - [Azure Deployment](#azure-deployment)
   - [Cost estimation](#cost-estimation)
   - [Project setup](#project-setup)
-    - [GitHub Codespaces](#github-codespaces)
-    - [VS Code Dev Containers](#vs-code-dev-containers)
-    - [Local environment](#local-environment)
+    - [GitHub Codespaces](#option-1-github-codespaces)
+    - [VS Code Dev Containers](#option-2-vs-code-dev-containers)
+    - [Local environment](#option-3-local-environment)
 - [Deploying](#deploying)
 - [Using the app](#using-the-app)
   - [Explore the prompty file](#explore-the-prompty-file)
@@ -83,16 +83,16 @@ However, you can try the [Azure pricing calculator](https://azure.com/e/d1818751
 ### Project setup
 
 You have a few options for setting up this project.
-The easiest way to get started is GitHub Codespaces, since it will setup all the tools for you.
+The easiest way to get started is GitHub Codespaces, since it will setup all the tools for you, but you can also set it up locally if desired.
 Here are the three options in increasing order of complexity and effort on your part. 
 
 Pick one!
 
- 1. Pre-built environment, in cloud with GitHub Codespaces (recommended)
- 2. Pre-built environment, on device with VS Code Dev Containers
- 3. Manual setup environment, on device with Anaconda or venv
+ 1. [GitHub Codespaces](#option-1-github-codespaces) (recommended)
+ 2. [VS Code Dev Containers](#option-2-vs-code-dev-containers) 
+ 3. [Local environment](#option-3-local-environment) 
 
-#### GitHub Codespaces
+#### Option 1: GitHub Codespaces
 
 **This is the recommended option!**
 You can run this repo virtually by using GitHub Codespaces, which will open a web-based VS Code in your browser. To run code spaces:
@@ -109,7 +109,7 @@ Once the codespace opens (this may take several minutes), open a terminal window
 
 Once you've launched Codespaces you can proceed to [step 2](#step-2-create-azure-resources).
 
-#### VS Code Dev Containers
+#### Option 2: VS Code Dev Containers
 
 A related option is VS Code Dev Containers, which will open the project in your local VS Code using the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers):
 
@@ -122,7 +122,7 @@ A related option is VS Code Dev Containers, which will open the project in your 
 
 - Once you've launched your docker container environment you can proceed to [step 2](#step-2-create-azure-resource).
 
-#### Local environment
+#### Option 3: Local environment
 
 1. Install the required tools:
 
