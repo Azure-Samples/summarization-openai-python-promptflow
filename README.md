@@ -16,13 +16,13 @@ urlFragment: summarization-openai-python-promptflow
 
 # Process Automation: Speech to Text and Summarization with AI Studio
 
-Samples in JavaScript, Python, and Java. Learn more at [https://aka.ms/azai](https://aka.ms/azai).
+### Samples in JavaScript, Python, and Java. Learn more at [https://aka.ms/azai](https://aka.ms/azai).
 ---
 
 ## Table of Contents
 
 - [Features](#features)
-- [Architecture Diagram](#architecture-diagram)
+- [Azure account requirements](#azure-account-requirements)
 - [Azure Deployment](#azure-deployment)
   - [Cost estimation](#cost-estimation)
   - [Project setup](#project-setup)
@@ -55,10 +55,9 @@ This project template provides the following features:
 * A bicep file to help provision and deploy your app using azd 
 * You will be able to use this app with Azure AI Studio
 
-## Architecture Diagram
 ![Architecture Digram](https://github.com/Azure-Samples/summarization-openai-python-promptflow/blob/main/images/architecture-diagram-summarization-aistudio.png)
 
-### Azure account requirements
+## Azure account requirements
 
 **IMPORTANT:** In order to deploy and run this example, you'll need:
 
