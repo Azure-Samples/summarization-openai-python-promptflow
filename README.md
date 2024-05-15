@@ -34,7 +34,7 @@ urlFragment: summarization-openai-python-promptflow
   - [Explore the prompty file](#explore-the-prompty-file)
   - [Testing the sample](#testing-the-sample)
 - [Contributing](#contributing)
-- [Code of Conduct](code-of-conduct)
+- [Code of Conduct](#code-of-conduct)
 
 
 [![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=599293758&machine=standardLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json&location=WestUs2)
@@ -54,6 +54,7 @@ This project template provides the following features:
 * `requirements.txt` file with all the python packages needed to run this example.
 * A bicep file to help provision and deploy your app using azd 
 * You will be able to use this app with Azure AI Studio
+  
 
 ![Architecture Digram](https://github.com/Azure-Samples/summarization-openai-python-promptflow/blob/main/images/architecture-diagram-summarization-aistudio.png)
 
@@ -107,7 +108,7 @@ Once the codespace opens (this may take several minutes), open a terminal window
 
 **Congratulations! Your cloud dev environment is ready!**
 
-Once you've launched Codespaces you can proceed to [step 2](#step-2-create-azure-resources).
+Once you've launched Codespaces you can now [deploy this app](#deploying).
 
 #### Option 2: VS Code Dev Containers
 
@@ -120,7 +121,7 @@ A related option is VS Code Dev Containers, which will open the project in your 
 
 **Congratulations! Your local dev environment is ready!**
 
-- Once you've launched your docker container environment you can proceed to [step 2](#step-2-create-azure-resource).
+- Once you've launched your docker container environment you can now [deploy this app](#deploying).
 
 #### Option 3: Local environment
 
@@ -163,7 +164,12 @@ Follow these steps to provision Azure resources and deploy the application code:
     Enter a name that will be used for the resource group.
     This will create a new folder in the `.azure` folder, and set it as the active environment for any     calls to `azd` going forward.
 
-3. Run `azd up` - This will provision Azure resources and deploy this sample to those resources.
+3. Run:
+   
+   ```shell
+    azd up
+    ```
+   This will provision Azure resources and deploy this sample to those resources.
    You will be prompted to select two locations, one for the majority of resources and one for the OpenAI resource, which is currently a short list. That location list is based on the [OpenAI model availability table](https://learn.microsoft.com/azure/cognitive-services/openai/concepts/models#model-summary-table-and-region-availability) and may become outdated as availability changes. For this sample we recommend using either Sweden Central or US East 2.
 
 ## Using the app
