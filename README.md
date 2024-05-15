@@ -140,15 +140,15 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 This sample repository contains a summarize prompty file you can explore. In this sample we are telling the model to summarize the reports given by a worker in a specific format. 
 
 The prompty file contains the following:
-- The `name`, `description` and `authors` of the prompt
-- `configuration`: Details about the LLM model including:
+- The name, description and authors of the prompt
+- configuration: Details about the LLM model including:
   - api type: chat or completion
   - configuration: connection type (azure_openai or openai) and environment variables
   - model parametes: max_tokesn, temperature and response_format (text or json_object)
-- `inputs`: the content input from the user, where each input should have a type and can also have a default value
-- `outputs`: where the output should have a type like string
+- inputs: the content input from the user, where each input should have a type and can also have a default value
+- outputs: where the output should have a type like string
 - Sample Section: a sample of the inputs to be provided
-- The prompt: in this sample we send add a `system message` as the prompt with context and details about the format. We also add in a `user message` at the bottom of the file, which consists of the reported issue in text format from our user. 
+- The prompt: in this sample we send add a system message as the prompt with context and details about the format. We also add in a user message at the bottom of the file, which consists of the reported issue in text format from our user. 
 
 If you ran the provisioning step above correctly, all of the variables should already be set for you. You can edit the prompt to see what changes this makes to the summary created. 
 
