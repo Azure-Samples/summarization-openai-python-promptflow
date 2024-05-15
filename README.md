@@ -1,159 +1,121 @@
----
-name: Process Automation - Speech to Text and Summarization with AI Studio
-description: Use Azure AI Studio for speech to text conversion and summarization with LLMs 
-languages:
-- python
-- typescript
-- bicep
-- azdeveloper
-products:
-- azure-openai
-- azure-cognitive-speech-sdk
-- azure
-page_type: sample
-urlFragment: summarization-openai-python-promptflow
----
-
 # Process Automation: Speech to Text and Summarization with AI Studio
 
-### Samples in JavaScript, Python, and Java. Learn more at [https://aka.ms/azai](https://aka.ms/azai).
----
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/summarization-openai-python-promptflow) [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/azure-samples/summarization-openai-python-promptflow)
+
+This sample creates a web-based app that allows workers at a company called Contoso Manufacturing to report issues via text or speech. Audio input is translated to text and then summarized to hightlight important information and specifiy the department the report should be sent to.
 
 ## Table of Contents
 
 - [Features](#features)
 - [Azure account requirements](#azure-account-requirements)
-- [Azure Deployment](#azure-deployment)
-  - [Cost estimation](#cost-estimation)
-  - [Project setup](#project-setup)
-    - [GitHub Codespaces](#option-1-github-codespaces)
-    - [VS Code Dev Containers](#option-2-vs-code-dev-containers)
-    - [Local environment](#option-3-local-environment)
-- [Deploying](#deploying)
-- [Using the app](#using-the-app)
+- [Opening the project](#opening-the-project)
+    - [GitHub Codespaces](#github-codespaces)
+    - [VS Code Dev Containers](#vs-code-dev-containers)
+    - [Local environment](#local-environment)
+      - [Prerequisites](#prerequisites)
+      - [Initializing the project](#initializing-the-project)
+- [Deployment](#deployment)
+- [Local Development](#local-development)
   - [Explore the prompty file](#explore-the-prompty-file)
   - [Testing the sample](#testing-the-sample)
-- [Contributing](#contributing)
+- [Costs](#costs)
+- [Security Guidelines](#security-guidelines)
+- [Resources](#resources)
 - [Code of Conduct](#code-of-conduct)
-
-
-[![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=599293758&machine=standardLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json&location=WestUs2)
-[![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/chat-rag-openai-csharp-prompty) 
-
-In this sample we recieve issues reported by field and shop floor workers at a company called Contoso Manufacturing, a manufacturing company that makes car batteries. The issues are shared by the workers either live through microphone input, pre-recorded as audio files or as text input. We translate audio input from speech to text and then use the text reports as input to an LLM and Prompty/Promptflow to summarize the issue and return the results in a format we specify.
-
-This sample uses the **[Azure AI Speech Service](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/)** and **[Python SDk](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/quickstarts/setup-platform?pivots=programming-language-python&tabs=macos%2Cubuntu%2Cdotnetcli%2Cdotnet%2Cjre%2Cmaven%2Cnodejs%2Cmac%2Cvscode)** to translate the users speech into text. It leverages **[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)** to summarize the text and **[Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html)** to create, manage and evaluate the prompt into our code.
 
 ## Features
 
 This project template provides the following features:
 
-* `speech_to_text.py` file that converts microphone input or pre-recorded audio to text.
-* Pre-recorded audio files in the `ticket-processing/data/` folder to use for testing the app.
-* `summarize.prompty` file where the prompt is constructed and edited.
-* `requirements.txt` file with all the python packages needed to run this example.
-* A bicep file to help provision and deploy your app using azd 
-* You will be able to use this app with Azure AI Studio
+* [Azure AI Speech Service](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/) to translate the users speech into text.
+* [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/) to summarize the text
+* [Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html) to create, manage and evaluate the prompt into our code.
   
-
 ![Architecture Digram](https://github.com/Azure-Samples/summarization-openai-python-promptflow/blob/main/images/architecture-diagram-summarization-aistudio.png)
 
 ## Azure account requirements
 
-**IMPORTANT:** In order to deploy and run this example, you'll need:
+In order to deploy and run this example, you'll need:
 
 * **Azure account**. If you're new to Azure, [get an Azure account for free](https://azure.microsoft.com/free/cognitive-search/) and you'll get some free Azure credits to get started. See [guide to deploying with the free trial](docs/deploy_lowcost.md).
 * **Azure subscription with access enabled for the Azure OpenAI service**. You can request access with [this form](https://aka.ms/oaiapply). If your access request to Azure OpenAI service doesn't match the [acceptance criteria](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access?context=%2Fazure%2Fcognitive-services%2Fopenai%2Fcontext%2Fcontext), you can use [OpenAI public API](https://platform.openai.com/docs/api-reference/introduction) instead.
     - Ability to deploy `gpt-35-turbo`
     - We recommend using Sweden Central or East US 2
 * **Azure subscription with access enabled for [Azure AI Speech Service](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/)**
-* **Azure account permissions**:
-  * Your Azure account must have `Microsoft.Authorization/roleAssignments/write` permissions, such as [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator), or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner). If you don't have subscription-level permissions, you must be granted [RBAC](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview) for an existing resource group and [deploy to that existing group](docs/deploy_existing.md#resource-group).
-  * Your Azure account also needs `Microsoft.Resources/deployments/write` permissions on the subscription level.
 
-## Azure deployment
-
-### Cost estimation
-
-Pricing varies per region and usage, so it isn't possible to predict exact costs for your usage.
-However, you can try the [Azure pricing calculator](https://azure.com/e/d18187516e9e421e925b3b311eec8aae) for the resources below.
-
-- Azure OpenAI: Standard tier, GPT and Ada models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)
-- Azure AI Speech: Free tier, this provides you with 5 audio hours free per month. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/speech-services/) 
-
-### Project setup
+## Opening the project
 
 You have a few options for setting up this project.
-The easiest way to get started is GitHub Codespaces, since it will setup all the tools for you, but you can also set it up locally if desired.
-Here are the three options in increasing order of complexity and effort on your part. 
+The easiest way to get started is GitHub Codespaces, since it will setup all the tools for you, but you can also [set it up locally](#local-environment).
 
-Pick one!
+### GitHub Codespaces
 
- 1. [GitHub Codespaces](#option-1-github-codespaces) (recommended)
- 2. [VS Code Dev Containers](#option-2-vs-code-dev-containers) 
- 3. [Local environment](#option-3-local-environment) 
+1. You can run this template virtually by using GitHub Codespaces. The button will open a web-based VS Code instance in your browser:
+   
+    [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/summarization-openai-python-promptflow)
 
-#### Option 1: GitHub Codespaces
+2. Open a terminal window.
+3. Sign in to your Azure account:
 
-**This is the recommended option!**
-You can run this repo virtually by using GitHub Codespaces, which will open a web-based VS Code in your browser. To run code spaces:
- - Fork the repo into your personal profile.
- - In your fork, click the green Code button on the repository
- - Select the `Codespaces` tab and click `Create codespace...`
+    ```shell
+    azd auth login
+    ```
 
-   You can also click this button:
-  [![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://codespaces.new/Azure-Samples/summarization-openai-python-promptflow)
+4. Provision the resources and deploy the code:
 
-Once the codespace opens (this may take several minutes), open a terminal window.
+    ```shell
+    azd up
+    ```
 
-**Congratulations! Your cloud dev environment is ready!**
+    This project uses gpt-3.5-turbo which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly.
 
-Once you've launched Codespaces you can now [deploy this app](#deploying).
-
-#### Option 2: VS Code Dev Containers
+### VS Code Dev Containers
 
 A related option is VS Code Dev Containers, which will open the project in your local VS Code using the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers):
 
 1. Start Docker Desktop (install it if not already installed)
 2. Open the project:
+   
     [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/summarization-openai-python-promptflow.git)
+
 3. In the VS Code window that opens, once the project files show up (this may take several minutes), open a terminal window.
 
-**Congratulations! Your local dev environment is ready!**
+### Local environment
 
-- Once you've launched your docker container environment you can now [deploy this app](#deploying).
+#### Prerequisites
 
-#### Option 3: Local environment
+* [Azure Developer CLI (azd)](https://aka.ms/install-azd)
+* [Python 3.10+](https://www.python.org/downloads/)
+* [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+* [Git](https://git-scm.com/downloads)
 
-1. Install the required tools:
+#### Initializing the project
 
-    * [Azure Developer CLI](https://aka.ms/azure-dev/install)
-    * [Python 3.9, 3.10, or 3.11](https://www.python.org/downloads/)
-      * **Important**: Python and the pip package manager must be in the path in Windows for the setup scripts to work.
-      * **Important**: Ensure you can run `python --version` from console. On Ubuntu, you might need to run `sudo apt install python-is-python3` to link `python` to `python3`.
-    * [Node.js 14+](https://nodejs.org/en/download/)
-    * [Git](https://git-scm.com/downloads)
-    * [Powershell 7+ (pwsh)](https://github.com/powershell/powershell) - For Windows users only.
-      * **Important**: Ensure you can run `pwsh.exe` from a PowerShell terminal. If this fails, you likely need to upgrade PowerShell.
-
-2. Create a new folder and switch to it in the terminal.
-3. Run this command to download the project code:
+1. Create a new folder and switch to it in the terminal, then run this command to download the project code:
 
     ```shell
     azd init -t summarization-openai-python-promptflow
     ```
-
     Note that this command will initialize a git repository, so you do not need to clone this repository.
 
-### Deploying
+2. Install required packages:
 
-Follow these steps to provision Azure resources and deploy the application code:
+```shell
+cd src/summarizationapp
+pip install -r requirements.txt
+```
 
-1. Login to your Azure account:
+## Deployment
+
+Once you've opened the project in [Codespaces](#github-codespaces), [Dev Containers](#vs-code-dev-containers), or [locally](#local-environment), you can deploy it to Azure.
+
+1. Sign in to your Azure account:
 
     ```shell
     azd auth login
     ```
+
+    If you have any issues with that command, you may also want to try `azd auth login --use-device-code`.
 
 2. Create a new azd environment:
 
@@ -161,18 +123,17 @@ Follow these steps to provision Azure resources and deploy the application code:
     azd env new
     ```
 
-    Enter a name that will be used for the resource group.
-    This will create a new folder in the `.azure` folder, and set it as the active environment for any     calls to `azd` going forward.
+    This will create a folder under `.azure/` in your project to store the configuration for this deployment. You may have multiple azd environments if desired.
 
-3. Run:
-   
-   ```shell
+3. Provision the resources and deploy the code:
+
+    ```shell
     azd up
     ```
-   This will provision Azure resources and deploy this sample to those resources.
-   You will be prompted to select two locations, one for the majority of resources and one for the OpenAI resource, which is currently a short list. That location list is based on the [OpenAI model availability table](https://learn.microsoft.com/azure/cognitive-services/openai/concepts/models#model-summary-table-and-region-availability) and may become outdated as availability changes. For this sample we recommend using either Sweden Central or US East 2.
 
-## Using the app
+    This project uses gpt-3.5-turbo which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly.
+
+## Local Development
 
 ### Explore the prompty file
 
@@ -207,15 +168,26 @@ pf flow test --flow ./src/summarizationapp --inputs problem="I need to open a pr
 
 To understand how the code works look through the `speech_to_text.py` file. 
 
-## Contributing
+## Costs
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+Pricing may vary per region and usage. Exact costs cannot be estimated.
+You may try the [Azure pricing calculator](https://azure.microsoft.com/pricing/calculator/) for the resources below:
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+* Azure Container Apps: Pay-as-you-go tier. Costs based on vCPU and memory used. [Pricing](https://azure.microsoft.com/pricing/details/container-apps/)
+* Azure OpenAI: Standard tier, GPT and Ada models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)
+* Azure Monitor: Pay-as-you-go tier. Costs based on data ingested. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
+
+## Security Guidelines
+
+This template uses [Managed Identity](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview) for authenticating to the Azure services used (Azure OpenAI, Azure PostgreSQL Flexible Server).
+
+Additionally, we have added a [GitHub Action](https://github.com/microsoft/security-devops-action) that scans the infrastructure-as-code files and generates a report containing any detected issues. To ensure continued best practices in your own repository, we recommend that anyone creating solutions based on our templates ensure that the [Github secret scanning](https://docs.github.com/code-security/secret-scanning/about-secret-scanning) setting is enabled.
+
+## Resources
+
+* [Promptflow/Prompty Documentation](https://microsoft.github.io/promptflow/reference/python-library-reference/promptflow-core/promptflow.core.html?highlight=prompty#promptflow.core.Prompty)
+* [Develop Python apps that use Azure AI services](https://learn.microsoft.com/azure/developer/python/azure-ai-for-python-developers)
+
 
 ## Code of Conduct
 
