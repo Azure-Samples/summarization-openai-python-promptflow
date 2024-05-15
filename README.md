@@ -16,17 +16,33 @@ urlFragment: summarization-openai-python-promptflow
 
 # Process Automation: Speech to Text and Summarization with AI Studio
 
+Samples in JavaScript, Python, and Java. Learn more at [https://aka.ms/azai](https://aka.ms/azai).
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Architecture Diagram](#architecture-diagram)
+- [Azure Deployment](#azure-deployment)
+  - [Cost estimation](#cost-estimation)
+  - [Project setup](#project-setup)
+    - [GitHub Codespaces](#github-codespaces)
+    - [VS Code Dev Containers](#vs-code-dev-containers)
+    - [Local environment](#local-environment)
+- [Deploying](#deploying)
+- [Using the app](#using-the-app)
+  - [Explore the prompty file](#explore-the-prompty-file)
+  - [Testing the sample](#testing-the-sample)
+- [Contributing](#contributing)
+- [Code of Conduct](code-of-conduct)
+
+
+[![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=599293758&machine=standardLinux32gb&devcontainer_path=.devcontainer%2Fdevcontainer.json&location=WestUs2)
+[![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/chat-rag-openai-csharp-prompty) 
+
 In this sample we recieve issues reported by field and shop floor workers at a company called Contoso Manufacturing, a manufacturing company that makes car batteries. The issues are shared by the workers either live through microphone input, pre-recorded as audio files or as text input. We translate audio input from speech to text and then use the text reports as input to an LLM and Prompty/Promptflow to summarize the issue and return the results in a format we specify.
 
-# Process Automation: Speech to Text and Summarization with AI Studio
-
 This sample uses the **[Azure AI Speech Service](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/)** and **[Python SDk](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/quickstarts/setup-platform?pivots=programming-language-python&tabs=macos%2Cubuntu%2Cdotnetcli%2Cdotnet%2Cjre%2Cmaven%2Cnodejs%2Cmac%2Cvscode)** to translate the users speech into text. It leverages **[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)** to summarize the text and **[Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html)** to create, manage and evaluate the prompt into our code.
-
-By the end of deploying this template you should be able to:
-
- 1. Describe what Azure AI Speech Service Python SDK provides.
- 2. Explain prompt creation with Prompty and Prompt Flow. 
- 3. Build, run, evaluate and deploy, the summarization app to Azure.
 
 ## Features
 
@@ -39,171 +55,121 @@ This project template provides the following features:
 * A bicep file to help provision and deploy your app using azd 
 * You will be able to use this app with Azure AI Studio
 
-### Architecture Diagram
+## Architecture Diagram
 ![Architecture Digram](https://github.com/Azure-Samples/summarization-openai-python-promptflow/blob/main/images/architecture-diagram-summarization-aistudio.png)
 
-## Getting Started
-
-### Prerequisites
-
-- **Azure Subscription** - [Signup for a free account.](https://azure.microsoft.com/free/)
-- **Visual Studio Code** - [Download it for free.](https://code.visualstudio.com/download)
-- **GitHub Account** - [Signup for a free account.](https://github.com/signup)
-- **Access to Azure Open AI Services** - [Learn about getting access.](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access)
+### Azure account requirements
 
 **IMPORTANT:** In order to deploy and run this example, you'll need:
 
-* **Azure subscription with access enabled for the Azure OpenAI service**. You can request access with [this form](https://aka.ms/oaiapply).
-    - Ability to deploy these models - `gpt-35-turbo`, `gpt-4`, `text-embeddings-ada-002`
+* **Azure account**. If you're new to Azure, [get an Azure account for free](https://azure.microsoft.com/free/cognitive-search/) and you'll get some free Azure credits to get started. See [guide to deploying with the free trial](docs/deploy_lowcost.md).
+* **Azure subscription with access enabled for the Azure OpenAI service**. You can request access with [this form](https://aka.ms/oaiapply). If your access request to Azure OpenAI service doesn't match the [acceptance criteria](https://learn.microsoft.com/legal/cognitive-services/openai/limited-access?context=%2Fazure%2Fcognitive-services%2Fopenai%2Fcontext%2Fcontext), you can use [OpenAI public API](https://platform.openai.com/docs/api-reference/introduction) instead.
+    - Ability to deploy `gpt-35-turbo`
     - We recommend using Sweden Central or East US 2
+* **Azure subscription with access enabled for [Azure AI Speech Service](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/)**
 * **Azure account permissions**:
   * Your Azure account must have `Microsoft.Authorization/roleAssignments/write` permissions, such as [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator), or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner). If you don't have subscription-level permissions, you must be granted [RBAC](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview) for an existing resource group and [deploy to that existing group](docs/deploy_existing.md#resource-group).
   * Your Azure account also needs `Microsoft.Resources/deployments/write` permissions on the subscription level.
 
-### AZD
-- **Install [azd](https://aka.ms/install-azd)**
-    - Windows: `winget install microsoft.azd`
-    - Linux: `curl -fsSL https://aka.ms/install-azd.sh | bash`
-    - MacOS: `brew tap azure/azd && brew install azd`
+## Azure deployment
 
+### Cost estimation
 
-## Step 1: Development Environment
+Pricing varies per region and usage, so it isn't possible to predict exact costs for your usage.
+However, you can try the [Azure pricing calculator](https://azure.com/e/d18187516e9e421e925b3b311eec8aae) for the resources below.
 
-The repository is instrumented with a `devcontainer.json` configuration that can provide you with a _pre-built_ environment that can be launched locally, or in the cloud. You can also elect to do a _manual_ environment setup locally, if desired. Here are the three options in increasing order of complexity and effort on your part. **Pick one!**
+- Azure OpenAI: Standard tier, GPT and Ada models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)
+- Azure AI Speech: Free tier, this provides you with 5 audio hours free per month. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/speech-services/) 
 
- 1. **Pre-built environment, in cloud** with GitHub Codespaces
- 2. **Pre-built environment, on device** with Docker Desktop
- 3. **Manual setup environment, on device** with Anaconda or venv
+### Project setup
 
-The first approach is _recommended_ for minimal user effort in startup and maintenance. The third approach will require you to manually update or maintain your local environment, to reflect any future updates to the repo.
+You have a few options for setting up this project.
+The easiest way to get started is GitHub Codespaces, since it will setup all the tools for you.
+Here are the three options in increasing order of complexity and effort on your part. 
 
-To setup the development environment you can leverage either GitHub Codespaces, a local Python environment (using Anaconda or venv), or a VS Code Dev Container environment (using Docker).
+Pick one!
 
-### Step 1.1: Pre-Built Environment, in cloud (GitHub Codespaces)
+ 1. Pre-built environment, in cloud with GitHub Codespaces (recommended)
+ 2. Pre-built environment, on device with VS Code Dev Containers
+ 3. Manual setup environment, on device with Anaconda or venv
 
-**This is the recommended option.**
+#### GitHub Codespaces
+
+**This is the recommended option!**
+You can run this repo virtually by using GitHub Codespaces, which will open a web-based VS Code in your browser. To run code spaces:
  - Fork the repo into your personal profile.
- - In your fork, click the green `Code` button on the repository
- - Select the `Codespaces` tab and click `Create codespace...` You can also click this button:
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/summarization-openai-python-promptflow)
+ - In your fork, click the green Code button on the repository
+ - Select the `Codespaces` tab and click `Create codespace...`
 
-This should open a new browser tab with a Codespaces container setup process running. On completion, this will launch a Visual Studio Code editor in the browser, with all relevant dependencies already installed in the running development container beneath. **Congratulations! Your cloud dev environment is ready!**
+   You can also click this button:
+  [![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://codespaces.new/Azure-Samples/summarization-openai-python-promptflow)
 
-- Once you've launched Codespaces you can proceed to [step 2](#step-2-create-azure-resources).
+Once the codespace opens (this may take several minutes), open a terminal window.
 
-### Step 1.2: Pre-Built Environment, on device (Docker Desktop)
+**Congratulations! Your cloud dev environment is ready!**
 
-This option uses the same `devcontainer.json` configuration, but launches the development container in your local device using Docker Desktop. To use this approach, you need to have the following tools pre-installed in your local device:
- - Visual Studio Code (with Dev Containers Extension)
- - Docker Desktop (community or free version is fine)
+Once you've launched Codespaces you can proceed to [step 2](#step-2-create-azure-resources).
 
-**Make sure your Docker Desktop daemon is running on your local device.** Then,
- - Fork this repo to your personal profile
- - Clone that fork to your local device
- - Open the cloned repo using Visual Studio Code
+#### VS Code Dev Containers
 
-If your Dev Containers extension is installed correctly, you will be prompted to "re-open the project in a container" - just confirm to launch the container locally. Alternatively, you may need to trigger this step manually. See the [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for more information.
+A related option is VS Code Dev Containers, which will open the project in your local VS Code using the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers):
 
-Once your project launches in the local Docker desktop container, you should see the Visual Studio Code editor reflect that connection in the status bar (blue icon, bottom left). **Congratulations! Your local dev environment is ready!**
+1. Start Docker Desktop (install it if not already installed)
+2. Open the project:
+    [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/summarization-openai-python-promptflow.git)
+3. In the VS Code window that opens, once the project files show up (this may take several minutes), open a terminal window.
 
-- Once you've launched your docker container environment you can proceed to [step 2]().
+**Congratulations! Your local dev environment is ready!**
 
-### Step 1.3: Manual Setup Environment, on device (Anaconda or venv)
+- Once you've launched your docker container environment you can proceed to [step 2](#step-2-create-azure-resource).
 
-#### Local Requirements
-In order to run this sample locally you will need to: 
+#### Local environment
 
-If all of the above are correctly installed you can set up your local developer environment as follows. 
+1. Install the required tools:
 
-1. First, fork the repo, and then clone the code sample locally: 
+    * [Azure Developer CLI](https://aka.ms/azure-dev/install)
+    * [Python 3.9, 3.10, or 3.11](https://www.python.org/downloads/)
+      * **Important**: Python and the pip package manager must be in the path in Windows for the setup scripts to work.
+      * **Important**: Ensure you can run `python --version` from console. On Ubuntu, you might need to run `sudo apt install python-is-python3` to link `python` to `python3`.
+    * [Node.js 14+](https://nodejs.org/en/download/)
+    * [Git](https://git-scm.com/downloads)
+    * [Powershell 7+ (pwsh)](https://github.com/powershell/powershell) - For Windows users only.
+      * **Important**: Ensure you can run `pwsh.exe` from a PowerShell terminal. If this fails, you likely need to upgrade PowerShell.
 
-   ``` bash
-   git clone https://github.com/Azure-Samples/summarization-openai-python-promptflow.git
-   ```
+2. Create a new folder and switch to it in the terminal.
+3. Run this command to download the project code:
 
-2. Open the repo in VS Code and navgate to the src directory
+    ```shell
+    azd init -t summarization-openai-python-promptflow
+    ```
 
-   ```bash
-   cd summarization-openai-python-promptflow
-   code .
-   cd src/summarizationapp
-   ```
+    Note that this command will initialize a git repository, so you do not need to clone this repository.
 
-3. Install the [Prompt Flow Extension](https://marketplace.visualstudio.com/items?itemName=prompt-flow.prompt-flow) in VS Code
-      - Open the VS Code Extensions tab
-      - Search for "Prompt Flow"
-      - Install the extension
+### Deploying
 
-4. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) for your device OS
+Follow these steps to provision Azure resources and deploy the application code:
 
-5. Create a new local Python environment using **either** [anaconda](https://www.anaconda.com/products/individual) **or** [venv](https://docs.python.org/3/library/venv.html) for a managed environment.
+1. Login to your Azure account:
 
-    a. **Option 1**: Using anaconda
-
-        ```
-        conda create -n summarization-promptflow python=3.11
-        conda activate summarization-promptflow
-        pip install -r requirements.txt
-        ```
-
-    b. **Option 2:** Using venv
-
-        ```
-        python3 -m venv .venv
-        source .venv/bin/activate
-        pip install -r requirements.txt
-        
-## Step 2: Install `azd` and deploy with `azd up`
-- If you setup your development environment manually, follow [these instructions](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows) to install `azd` for your local device OS.
-- If you used a pre-built dev container environment (e.g., GitHub Codespaces or Docker Desktop) the tool is pre-installed for you.
-- Verify that the tool is installed by typing ```azd version``` in a terminal.
-
-#### Authenticate with Azure
-- Start the authentication flow from a terminal:
-    ```bash
+    ```shell
     azd auth login
     ```
-- This should activate a Device Code authentication flow as shown below. Just follow the instructions and complete the auth flow till you get the `Logged in on Azure` message indicating success.
-    ```bash
-    Start by copying the next code: <code-here>
-    Then press enter and continue to log in from your browser...
+
+2. Create a new azd environment:
+
+    ```shell
+    azd env new
     ```
 
-- Run this unified command to provision all resources. This will take a non-trivial amount of time to complete.
-    ```bash
-    azd up
-    ```
-- You will be prompted for the subscription you want you use and the region. The bicep parameters declare two location fields: the first one is the primary location for all resources, the second is a location field specifically for where the OpenAI resource should be created.
+    Enter a name that will be used for the resource group.
+    This will create a new folder in the `.azure` folder, and set it as the active environment for any     calls to `azd` going forward.
 
-- On completion, it automatically invokes a`postprovision.sh` script that will attempt to log you into Azure. You may see something like this. Just follow the provided instructions to complete the authentication flow.
-    ```bash
-    No Azure user signed in. Please login.
-    ```
-- Once logged in, the script will do the following for you:
-    - Download `config.json` to the local device
-    - Populate `.env` with required environment variables
-    - Populate your data (in Azure AI Search, Azure CosmosDB)
-    - Create relevant Connections (for prompt flow)
-    - Upload your prompt flow to Azure (for deployment)
+3. Run `azd up` - This will provision Azure resources and deploy this sample to those resources.
+   You will be prompted to select two locations, one for the majority of resources and one for the OpenAI resource, which is currently a short list. That location list is based on the [OpenAI model availability table](https://learn.microsoft.com/azure/cognitive-services/openai/concepts/models#model-summary-table-and-region-availability) and may become outdated as availability changes. For this sample we recommend using either Sweden Central or US East 2.
 
-That's it! You should now be ready to continue the process as before. Note that this is a new process so there may be some issues to iron out. Start by completing the verification steps below and taking any troubleshooting actions identified.
+## Using the app
 
-#### Verify Provisioning
-
-The script should **set up a dedicated resource group** with the following resources:
-
- - **Azure AI services** resource
- - **Azure Container app** resource
- - **Azure Open AI Service** resource
- - **Azure Speech to Text** resource
-
-#### Verify `.env` setup
-
-The default sample has an `.env.sample` file in the `summarizationapp` folder that shows the relevant environment variables that need to be configured in this project. The script should create a `.env` file that has these same variables _but populated with the right values_ for your Azure resources.
-
-If the file is not created, copy over `.env.sample` to `.env` - then populate those values manually from the respective Azure resource pages using the Azure AI Studio (for the Azure OpenAI values). 
-
-## Step 3: Explore the `summarize.prompty` file
+### Explore the prompty file
 
 This sample repository contains a summarize prompty file you can explore. In this sample we are telling the model to summarize the reports given by a worker in a specific format. 
 
@@ -220,7 +186,7 @@ The prompty file contains the following:
 
 If you ran the provisioning step above correctly, all of the variables should already be set for you. You can edit the prompt to see what changes this makes to the summary created. 
 
-## Step 4: Testing the sample
+### Testing the sample
 
 This repository contains sample data to be able to test the project end to end. To run this project you'll need to pass in as input a reported issue to be summarized. You can pass this input as either a `.wav` file or a string of text. The `data/audio-data/` folder contains sample audio files for you to use or you can use the example string shown below. Below are the commands you can use in your terminal to run the project locally with promptflow.
 
@@ -246,7 +212,7 @@ When you submit a pull request, a CLA bot will automatically determine whether y
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
 provided by the bot. You will only need to do this once across all repos using our CLA.
 
-## Microsoft Open Source Code of Conduct
+## Code of Conduct
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
