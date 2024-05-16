@@ -2,211 +2,206 @@ targetScope = 'subscription'
 
 @minLength(1)
 @maxLength(64)
-@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+@description('Name which is used to generate a short unique hash for each resource')
 param environmentName string
 
 @minLength(1)
 @description('Primary location for all resources')
+@metadata({
+  azd: {
+    type: 'location'
+  }
+})
 param location string
 
-@description('The Azure resource group where new resources will be deployed')
-param resourceGroupName string = ''
-@description('The Azure AI Studio Hub resource name. If ommited will be generated')
-param aiHubName string = ''
-@description('The Azure AI Studio project name. If ommited will be generated')
-param aiProjectName string = ''
-@description('The application insights resource name. If ommited will be generated')
-param appInsightsName string = ''
-@description('The Open AI resource name. If ommited will be generated')
-param openAiName string = ''
-@description('The Azure Container Registry resource name. If ommited will be generated')
-param containerRegistryName string = ''
-@description('The Azure Key Vault resource name. If ommited will be generated')
-param keyVaultName string = ''
-@description('The Azure Storage Account resource name. If ommited will be generated')
-param storageAccountName string = ''
-@description('The log analytics workspace name. If ommited will be generated')
-param logAnalyticsWorkspaceName string = ''
-@description('The name of the machine learning online endpoint. If ommited will be generated')
-param endpointName string = ''
+@description('The name of the OpenAI resource')
+param openAiResourceName string = ''
+
+@description('The name of the resource group for the OpenAI resource')
+param openAiResourceGroupName string = ''
+
+@description('Location for the OpenAI resource')
+@allowed([ 'canadaeast', 'eastus', 'eastus2', 'francecentral', 'switzerlandnorth', 'uksouth', 'japaneast', 'northcentralus', 'australiaeast', 'swedencentral' ])
+@metadata({
+  azd: {
+    type: 'location'
+  }
+})
+param openAiResourceLocation string
+
+
+@description('The SKU name of the OpenAI resource')
+param openAiSkuName string = ''
+
+@description('The API version of the OpenAI resource')
+param openAiApiVersion string = ''
+
+@description('The type of the OpenAI resource')
+param openAiType string = 'azure'
+
+@description('The name of the OpenAI deployment')
+param openAiDeploymentName string = ''
+
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
-@description('The name of the azd service to use for the machine learning endpoint')
-param endpointServiceName string = 'chat'
 
-param useContainerRegistry bool = true
-param useAppInsights bool = true
 @description('Whether the deployment is running on GitHub Actions')
 param runningOnGh string = ''
+
 @description('Whether the deployment is running on Azure DevOps Pipeline')
 param runningOnAdo string = ''
-// USER ROLES
-var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
 
-var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
+var speechSubdomain  = 'summarization-cog-service${resourceToken}'
 var tags = { 'azd-env-name': environmentName }
-var deploymentName =  'gpt-35-turbo'
 
-// Organize resources in a resource group
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: 'rg-${environmentName}'
   location: location
   tags: tags
 }
 
-module ai 'core/host/ai-environment.bicep' = {
-  name: 'ai'
-  scope: rg
+resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
+  name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
+}
+
+var prefix = '${environmentName}-${resourceToken}'
+
+// USER ROLES
+var principalType = empty(runningOnGh) && empty(runningOnAdo) ? 'User' : 'ServicePrincipal'
+
+module managedIdentity 'core/security/managed-identity.bicep' = {
+  name: 'managed-identity'
+  scope: resourceGroup
   params: {
+    name: 'id-${resourceToken}'
     location: location
     tags: tags
-    hubName: !empty(aiHubName) ? aiHubName : 'ai-hub-${resourceToken}'
-    projectName: !empty(aiProjectName) ? aiProjectName : 'ai-project-${resourceToken}'
-    keyVaultName: !empty(keyVaultName) ? keyVaultName : '${abbrs.keyVaultVaults}${resourceToken}'
-    storageAccountName: !empty(storageAccountName)
-      ? storageAccountName
-      : '${abbrs.storageStorageAccounts}${resourceToken}'
-    openAiName: !empty(openAiName) ? openAiName : 'aoai-${resourceToken}'
-    openAiModelDeployments: [
-      {
-        name: deploymentName
-        model: {
-          format: 'OpenAI'
-          name: deploymentName
-          version: '0613'
-        }
-        sku: {
-            name: 'Standard'
-            capacity: 20
-          }
-        }
-        {
-         name: 'text-embedding-ada-002'
-          model: {
-            format: 'OpenAI'
-            name: 'text-embedding-ada-002'
-            version: '2'
-          }
-          sku: {
-            name: 'Standard'
-            capacity: 20
-          }
-      }
-    ]
-    logAnalyticsName: !useAppInsights
-      ? ''
-      : !empty(logAnalyticsWorkspaceName)
-          ? logAnalyticsWorkspaceName
-          : '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
-    appInsightsName: !useAppInsights
-      ? ''
-      : !empty(appInsightsName) ? appInsightsName : '${abbrs.insightsComponents}${resourceToken}'
-    containerRegistryName: !useContainerRegistry
-      ? ''
-      : !empty(containerRegistryName) ? containerRegistryName : '${abbrs.containerRegistryRegistries}${resourceToken}'
   }
 }
 
-module machineLearningEndpoint './core/host/ml-online-endpoint.bicep' = {
-  name: 'endpoint'
-  scope: rg
+module openAi 'core/ai/cognitiveservices.bicep' = {
+  name: 'openai'
+  scope: openAiResourceGroup
   params: {
-    name: !empty(endpointName) ? endpointName : 'mloe-${resourceToken}'
-    location: location
+    name: !empty(openAiResourceName) ? openAiResourceName : '${resourceToken}-cog'
+    location: !empty(openAiResourceLocation) ? openAiResourceLocation : location
     tags: tags
-    serviceName: endpointServiceName
-    aiHubName: ai.outputs.hubName
-    aiProjectName: ai.outputs.projectName
-    keyVaultName: ai.outputs.keyVaultName
+    sku: {
+      name: !empty(openAiSkuName) ? openAiSkuName : 'S0'
+    }
+    deployments: [
+      {
+        name: openAiDeploymentName
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-35-turbo'
+          version: '0613'
+        }
+        sku: {
+          name: 'Standard'
+          capacity: 30
+        }
+      }
+    ]
   }
 }
 
 module speechRecognizer 'core/ai/cognitiveservices.bicep' = {
   name: 'speechRecognizer'
-  scope: rg
+  scope: resourceGroup
   params: {
     name: 'cog-sp-${resourceToken}'
     kind: 'SpeechServices'
     location: location
     tags: tags
+    customSubDomainName: speechSubdomain
     sku: {
       name: 'S0'
     }
   }
 }
 
-module keyVaultAccess 'core/security/keyvault-access.bicep' = {
-  name: 'keyvault-access'
-  scope: rg
+module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
+  name: 'loganalytics'
+  scope: resourceGroup
   params: {
-    keyVaultName: ai.outputs.keyVaultName
-    principalId: ai.outputs.projectPrincipalId
+    name: '${prefix}-loganalytics'
+    location: location
+    tags: tags
   }
 }
 
-module userAcrRolePush 'core/security/role.bicep' = {
-  name: 'user-acr-role-push'
-  scope: rg
+module monitoring 'core/monitor/monitoring.bicep' = {
+  name: 'monitoring'
+  scope: resourceGroup
+  params: {
+    location: location
+    tags: tags
+    logAnalyticsName: logAnalyticsWorkspace.name
+    applicationInsightsName: '${prefix}-appinsights'
+    applicationInsightsDashboardName: '${prefix}-dashboard'
+  }
+}
+
+// Container apps host (including container registry)
+module containerApps 'core/host/container-apps.bicep' = {
+  name: 'container-apps'
+  scope: resourceGroup
+  params: {
+    name: 'app'
+    location: location
+    tags: tags
+    containerAppsEnvironmentName: '${prefix}-containerapps-env'
+    containerRegistryName: '${replace(prefix, '-', '')}registry'
+    logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
+  }
+}
+
+module aca 'app/aca.bicep' = {
+  name: 'aca'
+  scope: resourceGroup
+  params: {
+    name: replace('${take(prefix, 19)}-ca', '--', '-')
+    location: location
+    tags: tags
+    identityName: managedIdentity.outputs.managedIdentityName
+    identityId: managedIdentity.outputs.managedIdentityClientId
+    containerAppsEnvironmentName: containerApps.outputs.environmentName
+    containerRegistryName: containerApps.outputs.registryName
+    openAiDeploymentName: !empty(openAiDeploymentName) ? openAiDeploymentName : 'gpt-35-turbo'
+    openAiEndpoint: openAi.outputs.endpoint
+    openAiType: openAiType
+    openAiApiVersion: openAiApiVersion
+    speechResourceId: speechRecognizer.outputs.id
+    speechRegion: location
+    appinsights_Connectionstring: monitoring.outputs.applicationInsightsConnectionString
+  }
+}
+
+module appinsightsAccountRole 'core/security/role.bicep' = {
+  scope: resourceGroup
+  name: 'appinsights-account-role'
+  params: {
+    principalId: managedIdentity.outputs.managedIdentityPrincipalId
+    roleDefinitionId: '3913510d-42f4-4e42-8a64-420c390055eb' // Monitoring Metrics Publisher
+    principalType: 'ServicePrincipal'
+  }
+}
+
+
+module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
+  scope: resourceGroup
+  name: 'user-openai-user'
   params: {
     principalId: principalId
-    roleDefinitionId: '8311e382-0749-4cb8-b61a-304f252e45ec'
-    principalType: 'User'
-  }
-}
-
-module userAcrRolePullBackend 'core/security/role.bicep' = {
-  name: 'user-acr-role-pull-backend'
-  scope: rg
-  params: {
-    principalId: ai.outputs.projectPrincipalId
-    roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-    principalType: 'ServicePrincipal'
-  }
-}
-
-module userAcrRolePushBackend 'core/security/role.bicep' = {
-  name: 'user-acr-role-push-backend'
-  scope: rg
-  params: {
-    principalId: ai.outputs.projectPrincipalId
-    roleDefinitionId: '8311e382-0749-4cb8-b61a-304f252e45ec'
-    principalType: 'ServicePrincipal'
-  }
-}
-
-module userAcrRolePull 'core/security/role.bicep' = {
-  name: 'user-acr-role-pull'
-  scope: rg
-  params: {
-    principalId: principalId
-    roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-    principalType: 'User'
-  }
-}
-
-module speechRoleBackend 'core/security/role.bicep' = {
-  scope: rg
-  name: 'speech-role-backend'
-  params: {
-    principalId: ai.outputs.projectPrincipalId
-    roleDefinitionId: 'f2dc8367-1007-4938-bd23-fe263f013447' //Cognitive Services Speech User
-    principalType: 'ServicePrincipal'
-  }
-}
-
-module openaiRoleBackend 'core/security/role.bicep' = {
-  scope: rg
-  name: 'openai-role-backend'
-  params: {
-    principalId: ai.outputs.projectPrincipalId
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' //Cognitive Services OpenAI User
-    principalType: 'ServicePrincipal'
+    principalType: principalType
   }
 }
 
-module speechRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
-  scope: rg
+module SpeechRoleUser 'core/security/role.bicep' = {
+  scope: resourceGroup
   name: 'speech-role-user'
   params: {
     principalId: principalId
@@ -215,77 +210,33 @@ module speechRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
   }
 }
 
-module openaiRoleUser 'core/security/role.bicep' = if (!empty(principalId)) {
-  scope: rg
-  name: 'openai-role-user'
+module speechRoleBackend 'core/security/role.bicep' = {
+  scope: resourceGroup
+  name: 'speech-role-backend'
   params: {
-    principalId: principalId
-    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' //Cognitive Services OpenAI User
-    principalType: principalType
-  }
-}
-
-module userRoleDataScientist 'core/security/role.bicep' = {
-  name: 'user-role-data-scientist'
-  scope: rg
-  params: {
-    principalId: principalId
-    roleDefinitionId: 'f6c7c914-8db3-469d-8ca1-694a8f32e121'
-    principalType: principalType
-  }
-}
-
-module userRoleSecretsReader 'core/security/role.bicep' = {
-  name: 'user-role-secrets-reader'
-  scope: rg
-  params: {
-    principalId: principalId
-    roleDefinitionId: 'ea01e6af-a1c1-4350-9563-ad00f8c72ec5'
-    principalType: principalType
-  }
-}
-
-module mlServiceRoleDataScientist 'core/security/role.bicep' = {
-  name: 'ml-service-role-data-scientist'
-  scope: rg
-  params: {
-    principalId: ai.outputs.projectPrincipalId
-    roleDefinitionId: 'f6c7c914-8db3-469d-8ca1-694a8f32e121'
+    principalId: managedIdentity.outputs.managedIdentityPrincipalId
+    roleDefinitionId: 'f2dc8367-1007-4938-bd23-fe263f013447' //Cognitive Services Speech User
     principalType: 'ServicePrincipal'
   }
 }
 
-module mlServiceRoleSecretsReader 'core/security/role.bicep' = {
-  name: 'ml-service-role-secrets-reader'
-  scope: rg
-  params: {
-    principalId: ai.outputs.projectPrincipalId
-    roleDefinitionId: 'ea01e6af-a1c1-4350-9563-ad00f8c72ec5'
-    principalType: 'ServicePrincipal'
-  }
-}
+output AZURE_LOCATION string = location
+output RESOURCE_GROUP_NAME string = resourceGroup.name
 
-// output the names of the resources
-output AZURE_TENANT_ID string = tenant().tenantId
-output AZURE_RESOURCE_GROUP string = rg.name
+output AZURE_OPENAI_CHATGPT_DEPLOYMENT string = openAiDeploymentName
+output AZURE_OPENAI_API_VERSION string = openAiApiVersion
+output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
+output AZURE_OPENAI_RESOURCE string = openAi.outputs.name
+output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
+output AZURE_OPENAI_SKU_NAME string = openAi.outputs.skuName
+output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroup.location
 
-output AZUREAI_HUB_NAME string = ai.outputs.hubName
-output AZUREAI_PROJECT_NAME string = ai.outputs.projectName
-output AZUREAI_ENDPOINT_NAME string = machineLearningEndpoint.outputs.name
-output AZURE_OPENAI_NAME string = ai.outputs.openAiName
-output AZURE_OPENAI_ENDPOINT string = ai.outputs.openAiEndpoint
-output AZURE_OPENAI_CHAT_DEPLOYMENT string = deploymentName
-output AZURE_CONTAINER_REGISTRY_NAME string = ai.outputs.containerRegistryName
-output AZURE_CONTAINER_REGISTRY_ENDPOINT string = ai.outputs.containerRegistryEndpoint
+output SERVICE_ACA_NAME string = aca.outputs.SERVICE_ACA_NAME
+output SERVICE_ACA_URI string = aca.outputs.SERVICE_ACA_URI
+output SERVICE_ACA_IMAGE_NAME string = aca.outputs.SERVICE_ACA_IMAGE_NAME
 
-output AZURE_KEYVAULT_NAME string = ai.outputs.keyVaultName
-output AZURE_KEYVAULT_ENDPOINT string = ai.outputs.keyVaultEndpoint
+output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environmentName
+output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
+output AZURE_CONTAINER_REGISTRY_NAME string = containerApps.outputs.registryName
 
-output AZURE_STORAGE_ACCOUNT_NAME string = ai.outputs.storageAccountName
-output AZURE_STORAGE_ACCOUNT_ENDPOINT string = ai.outputs.storageAccountName
-
-output AZURE_APP_INSIGHTS_NAME string = ai.outputs.appInsightsName
-output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = ai.outputs.logAnalyticsWorkspaceName
-
-output AZURE_SPEECH_RESOURCE_ID string = speechRecognizer.outputs.id
-output AZURE_SPEECH_REGION string = location
+output APPINSIGHTS_CONNECTIONSTRING string = monitoring.outputs.applicationInsightsConnectionString

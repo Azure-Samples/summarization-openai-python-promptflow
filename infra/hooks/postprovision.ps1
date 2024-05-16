@@ -1,4 +1,10 @@
-Write-Host "Starting postprovisioning..."
+#!/usr/bin/env pwsh
+
+Write-Output  "Building summarizationapp:latest..."
+az acr build --subscription $env:AZURE_SUBSCRIPTION_ID --registry $env:AZURE_CONTAINER_REGISTRY_NAME --image summarizationapp:latest ./src/
+$image_name = $env:AZURE_CONTAINER_REGISTRY_NAME + '.azurecr.io/summarizationapp:latest'
+az containerapp update --subscription $env:AZURE_SUBSCRIPTION_ID --name $env:SERVICE_ACA_NAME --resource-group $env:RESOURCE_GROUP_NAME --image $image_name
+az containerapp ingress update --subspription $env:AZURE_SUBSCRIPTION_ID --name $env:SERVICE_ACA_NAME --resource-group $env:RESOURCE_GROUP_NAME --target-port 5000
 
 # Retrieve service names, resource group name, and other values from environment variables
 $resourceGroupName = $env:AZURE_RESOURCE_GROUP
@@ -10,13 +16,11 @@ Write-Host "openAiService: $openAiService"
 $subscriptionId = $env:AZURE_SUBSCRIPTION_ID
 Write-Host "subscriptionId: $subscriptionId"
 
-$aiProjectName = $env:AZUREAI_PROJECT_NAME
-Write-Host "aiProjectName: $aiProjectName"
 
 # Ensure all required environment variables are set
-if ([string]::IsNullOrEmpty($resourceGroupName) -or [string]::IsNullOrEmpty($openAiService) -or [string]::IsNullOrEmpty($subscriptionId) -or [string]::IsNullOrEmpty($aiProjectName)) {
+if ([string]::IsNullOrEmpty($resourceGroupName) -or [string]::IsNullOrEmpty($openAiService) -or [string]::IsNullOrEmpty($subscriptionId)) {
     Write-Host "One or more required environment variables are not set."
-    Write-Host "Ensure that AZURE_RESOURCE_GROUP, AZURE_OPENAI_NAME, AZURE_SUBSCRIPTION_ID, and AZUREAI_PROJECT_NAME are set."
+    Write-Host "Ensure that AZURE_RESOURCE_GROUP, AZURE_OPENAI_NAME, AZURE_SUBSCRIPTION_ID are set."
     exit 1
 }
 
@@ -31,8 +35,3 @@ azd env set AZURE_OPENAI_CHAT_DEPLOYMENT gpt-35-turbo
 
 # Output environment variables to .env file using azd env get-values
 azd env get-values > ./src/summarizationapp/.env
-
-Write-Host "Script execution completed successfully."
-
-Write-Host 'Installing dependencies from "requirements.txt"'
-python -m pip install -r src/summarizationapp/requirements.txt

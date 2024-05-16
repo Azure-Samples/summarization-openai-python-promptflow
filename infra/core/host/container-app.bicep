@@ -73,7 +73,7 @@ param serviceBinds array = []
 param serviceType string = ''
 
 @description('The target port for the container')
-param targetPort int = 80
+param targetPort int = 5000
 
 resource userIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(identityName)) {
   name: identityName
@@ -140,7 +140,7 @@ resource app 'Microsoft.App/containerApps@2023-05-02-preview' = {
       serviceBinds: !empty(serviceBinds) ? serviceBinds : null
       containers: [
         {
-          image: !empty(imageName) ? imageName : 'mcr.microsoft.com/azuredocs/containerapps-summarization:latest'
+          image: !empty(imageName) ? imageName : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
           name: containerName
           env: env
           resources: {
