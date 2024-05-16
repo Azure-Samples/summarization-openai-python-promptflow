@@ -133,6 +133,8 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
     This project uses gpt-3.5-turbo which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly.
 
+4. A `.env` file should have been created in the src folder. Move this file into the `summarizationapp` folder. This will contain all the environment variables you need. 
+
 ## Local Development
 
 ### Explore the prompty file
