@@ -13,6 +13,7 @@ param openAiApiVersion string
 param openAiType string
 param appinsights_Connectionstring string
 param speechResourceId string
+param speechKey string
 param speechRegion string
 
 
@@ -32,19 +33,19 @@ module app '../core/host/container-app-upsert.bicep' = {
         value: identityId
       }
       {
-        name: 'OPENAI__TYPE'
+        name: 'OPENAI_HOST'
         value: openAiType
       }
       {
-        name: 'OPENAI__API_VERSION'
+        name: 'AZURE_OPENAI_API_VERSION'
         value: openAiApiVersion
       }
       {
-        name: 'OPENAI__ENDPOINT'
+        name: 'AZURE_OPENAI_ENDPOINT'
         value: openAiEndpoint
       }
       {
-        name: 'OPENAI__DEPLOYMENT'
+        name: 'AZURE_OPENAI_CHAT_DEPLOYMENT'
         value: openAiDeploymentName
       }
       {
@@ -52,11 +53,11 @@ module app '../core/host/container-app-upsert.bicep' = {
         value: appinsights_Connectionstring
       }
       {
-        name: 'AZURE_SPEECH__RESOURCE_ID'
-        value: speechResourceId
+        name: 'SPEECH_KEY'
+        value: speechKey
       }
       {
-        name: 'AZURE_SPEECH__REGION'
+        name: 'AZURE_SPEECH_REGION'
         value: speechRegion
       }
 

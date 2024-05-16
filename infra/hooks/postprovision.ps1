@@ -28,8 +28,6 @@ if ([string]::IsNullOrEmpty($resourceGroupName) -or [string]::IsNullOrEmpty($ope
 $apiKey = (az cognitiveservices account keys list --name $openAiService --resource-group $resourceGroupName --query key1 --output tsv)
 
 # Set the environment variables using azd env set
-azd env set AZURE_OPENAI_API_KEY $apiKey
-azd env set AZURE_OPENAI_KEY $apiKey
 azd env set AZURE_OPENAI_API_VERSION 2023-03-15-preview
 azd env set AZURE_OPENAI_CHAT_DEPLOYMENT gpt-35-turbo
 

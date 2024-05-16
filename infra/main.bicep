@@ -174,6 +174,7 @@ module aca 'app/aca.bicep' = {
     openAiType: openAiType
     openAiApiVersion: openAiApiVersion
     speechResourceId: speechRecognizer.outputs.id
+    speechKey: speechRecognizer.outputs.key
     speechRegion: location
     appinsights_Connectionstring: monitoring.outputs.applicationInsightsConnectionString
   }
@@ -221,12 +222,12 @@ module speechRoleBackend 'core/security/role.bicep' = {
 }
 
 output AZURE_LOCATION string = location
-output RESOURCE_GROUP_NAME string = resourceGroup.name
+output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
 output AZURE_OPENAI_CHATGPT_DEPLOYMENT string = openAiDeploymentName
 output AZURE_OPENAI_API_VERSION string = openAiApiVersion
 output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
-output AZURE_OPENAI_RESOURCE string = openAi.outputs.name
+output AZURE_OPENAI_NAME string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
 output AZURE_OPENAI_SKU_NAME string = openAi.outputs.skuName
 output AZURE_OPENAI_RESOURCE_GROUP_LOCATION string = openAiResourceGroup.location
