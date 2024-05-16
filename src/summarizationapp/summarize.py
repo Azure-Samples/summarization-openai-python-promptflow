@@ -1,6 +1,9 @@
 # Speech to text sdk
 import logging
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import azure.cognitiveservices.speech as speech
 from azure.identity import ManagedIdentityCredential, DefaultAzureCredential
