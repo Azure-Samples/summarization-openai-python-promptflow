@@ -31,7 +31,7 @@ This project template provides the following features:
 * [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/) to summarize the text
 * [Prompty and Prompt Flow](https://microsoft.github.io/promptflow/how-to-guides/develop-a-prompty/index.html) to create, manage and evaluate the prompt into our code.
   
-![Architecture Digram](https://github.com/Azure-Samples/summarization-openai-python-promptflow/blob/main/images/architecture-diagram-summarization-aistudio.png)
+![Architecture Digram](https://github.com/Azure-Samples/summarization-openai-python-promptflow/blob/main/images/summarization-aca.png)
 
 ## Azure account requirements
 
