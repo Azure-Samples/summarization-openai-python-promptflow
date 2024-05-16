@@ -170,6 +170,16 @@ pf flow test --flow ./src/summarizationapp --inputs problem="I need to open a pr
 
 To understand how the code works look through the `speech_to_text.py` file. 
 
+1. Run the local server:
+
+    ```shell
+    python -m flask --debug --app src/app:app run --port 5000
+    ```
+
+3. Click 'http://127.0.0.1:5000' in the terminal, which should open a new tab in the browser.
+
+4. Try the API at '/get_response' and try passing in a parameter at the end of the URL, like '/get_response?problem="string"'.
+
 ## Costs
 
 Pricing may vary per region and usage. Exact costs cannot be estimated.
