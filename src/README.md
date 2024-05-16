@@ -74,7 +74,7 @@ This sample repository contains a chat prompty file you can explore. This will l
 You can test your connection to your Azure Open AI model by running running your flow locally. Try changing up the specified system prompt to see how the model behaves with additional prompting.
 
 ``` bash
-pf flow test --flow ./summarizationapp --inputs question="why is the sky blue?"
+pf flow test --flow ./summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
 ```
 
 ## Step 3: Test locally
@@ -82,7 +82,7 @@ pf flow test --flow ./summarizationapp --inputs question="why is the sky blue?"
 Prompt flow provides an integrated front end to test chat applications. You can run with the `ui` flag to locally serve a web front end for testing. This will help you validate your inputs and outputs and test your chat functionality.
 
 ``` bash
-pf flow test --flow ./summarizationapp --inputs question="why is the sky blue?" --ui
+pf flow test --flow ./summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234" --ui
 ```
 
 ## Step 4: Deploy application to AI Studio

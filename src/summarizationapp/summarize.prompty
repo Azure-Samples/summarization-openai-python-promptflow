@@ -8,7 +8,6 @@ model:
     configuration:
         type: azure_openai
         azure_deployment: gpt-35-turbo
-        api_key: ${env:AZURE_OPENAI_API_KEY}
         api_version: ${env:AZURE_OPENAI_API_VERSION}
         azure_endpoint: ${env:AZURE_OPENAI_ENDPOINT}
     parameters:
@@ -36,7 +35,7 @@ outputs:
 sample:
     first_name: "Jane"
     last_name: "Doe"
-    reported_issue: "I need to open a problem report for part number ABC 123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24°C and we are seeing this after three to four laps during once when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG 234."
+    problem: "I need to open a problem report for part number ABC 123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24°C and we are seeing this after three to four laps during once when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG 234."
     chat_history: []
 
 ---
