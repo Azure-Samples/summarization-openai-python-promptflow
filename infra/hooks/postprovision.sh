@@ -1,4 +1,11 @@
-#!/bin/sh
+#!/bin/bash
+
+echo  "Building summarizationapp:latest..."
+az acr build --subscription ${AZURE_SUBSCRIPTION_ID} --registry ${AZURE_CONTAINER_REGISTRY_NAME} --image summarizationapp:latest ./src/
+image_name="${AZURE_CONTAINER_REGISTRY_NAME}.azurecr.io/summarizationapp:latest"
+az containerapp update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${RESOURCE_GROUP_NAME} --image ${image_name}
+az containerapp ingress update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${RESOURCE_GROUP_NAME} --target-port 5000
+
 
 echo "Starting postprovisioning..."
 # Retrieve service names, resource group name, and other values from environment variables
@@ -11,14 +18,11 @@ echo openAiService: $openAiService
 subscriptionId=$AZURE_SUBSCRIPTION_ID
 echo subscriptionId: $subscriptionId
 
-aiProjectName=$AZUREAI_PROJECT_NAME
-echo aiProjectName: $aiProjectName
-
 
 # Ensure all required environment variables are set
-if [ -z "$resourceGroupName" ] || [ -z "$openAiService" ] || [ -z "$subscriptionId" ] || [ -z "$aiProjectName" ]; then
+if [ -z "$resourceGroupName" ] || [ -z "$openAiService" ] || [ -z "$subscriptionId" ]; then
     echo "One or more required environment variables are not set."
-    echo "Ensure that AZURE_RESOURCE_GROUP, AZURE_OPENAI_NAME, AZURE_SUBSCRIPTION_ID, and AZUREAI_PROJECT_NAME are set."
+    echo "Ensure that AZURE_RESOURCE_GROUP, AZURE_OPENAI_NAME, AZURE_SUBSCRIPTION are set."
     exit 1
 fi
 
@@ -33,8 +37,3 @@ azd env set AZURE_OPENAI_CHAT_DEPLOYMENT gpt-35-turbo
 
 # Output environment variables to .env file using azd env get-values
 azd env get-values > ./src/summarizationapp/.env
-
-echo "Script execution completed successfully."
-
-echo 'Installing dependencies from "requirements.txt"'
-python3 -m pip install -r ./src/summarizationapp/requirements.txt

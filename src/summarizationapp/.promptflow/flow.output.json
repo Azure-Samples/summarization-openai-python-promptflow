@@ -1,3 +1,3 @@
 {
-  "output": "Summary:\n- Brake rotor overheating causing glazing on pads\n- Part number ABC 123\n- Occurs after three to four laps when driver brakes late and aggressively into corners\n- Severity rating: 2\n- Impacts front brake assembly EFG 234\n\nReported by: Jane Doe"
+  "output": "Summary:\n- Brake rotor overheating causing glazing on the pads\n- Part number: ABC123\n- Temperature above 24 degrees Celsius\n- Occurs after three to four laps during runs with late and aggressive braking into corners\n- Technical priority: 2\n- Impacts front brake assembly EFG234\n\nReported by: Jane Doe"
 }

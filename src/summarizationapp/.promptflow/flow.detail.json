@@ -1,34 +1,34 @@
 {
   "flow_runs": [
     {
-      "run_id": "c40e5da4-e2bd-43be-ae33-1ce5f30ddc16_0",
+      "run_id": "b983516e-7c39-49c5-8b98-0594647bfb04_0",
       "status": "Completed",
       "error": null,
       "inputs": {
-        "problem": "data/audio-data/issue0.wav"
+        "problem": "I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
       },
       "output": {
-        "output": "Summary:\n- Brake rotor overheating causing glazing on pads\n- Part number ABC 123\n- Occurs after three to four laps when driver brakes late and aggressively into corners\n- Severity rating: 2\n- Impacts front brake assembly EFG 234\n\nReported by: Jane Doe"
+        "output": "Summary:\n- Brake rotor overheating causing glazing on the pads\n- Part number: ABC123\n- Temperature above 24 degrees Celsius\n- Occurs after three to four laps during runs with late and aggressive braking into corners\n- Technical priority: 2\n- Impacts front brake assembly EFG234\n\nReported by: Jane Doe"
       },
       "metrics": null,
       "request": null,
-      "parent_run_id": "c40e5da4-e2bd-43be-ae33-1ce5f30ddc16",
-      "root_run_id": "c40e5da4-e2bd-43be-ae33-1ce5f30ddc16",
+      "parent_run_id": "b983516e-7c39-49c5-8b98-0594647bfb04",
+      "root_run_id": "b983516e-7c39-49c5-8b98-0594647bfb04",
       "source_run_id": null,
       "flow_id": "default_flow_id",
-      "start_time": "2024-05-08T01:30:15.567978Z",
-      "end_time": "2024-05-08T01:30:28.412808Z",
+      "start_time": "2024-05-16T11:33:29.618083Z",
+      "end_time": "2024-05-16T11:33:38.919679Z",
       "index": 0,
       "api_calls": [
         {
           "name": "flow_entry",
           "type": "Flow",
           "inputs": {
-            "problem": "data/audio-data/issue0.wav"
+            "problem": "I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
           },
-          "output": "Summary:\n- Brake rotor overheating causing glazing on pads\n- Part number ABC 123\n- Occurs after three to four laps when driver brakes late and aggressively into corners\n- Severity rating: 2\n- Impacts front brake assembly EFG 234\n\nReported by: Jane Doe",
-          "start_time": 1715149815.567978,
-          "end_time": 1715149828.410804,
+          "output": "Summary:\n- Brake rotor overheating causing glazing on the pads\n- Part number: ABC123\n- Temperature above 24 degrees Celsius\n- Occurs after three to four laps during runs with late and aggressive braking into corners\n- Technical priority: 2\n- Impacts front brake assembly EFG234\n\nReported by: Jane Doe",
+          "start_time": 1715877209.618083,
+          "end_time": 1715877218.918312,
           "error": null,
           "children": [
             {
@@ -39,7 +39,7 @@
                 "inputs": {
                   "first_name": "Jane",
                   "last_name": "Doe",
-                  "problem": "I need to open a problem report for part number ABC 123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24°C and we are seeing this after three to four laps during once when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG 234.",
+                  "problem": "I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234",
                   "chat_history": []
                 }
               },
@@ -50,16 +50,16 @@
                 },
                 {
                   "role": "user",
-                  "content": "I need to open a problem report for part number ABC 123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24°C and we are seeing this after three to four laps during once when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG 234."
+                  "content": "I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
                 }
               ],
-              "start_time": 1715149826.645918,
-              "end_time": 1715149826.649917,
+              "start_time": 1715877210.216156,
+              "end_time": 1715877210.222185,
               "error": null,
               "children": [],
               "node_name": null,
-              "parent_id": "b2d175e8-89e5-4c1f-b837-a0367e49ac83",
-              "id": "b7600e6a-9710-4e35-a285-e9ee5b06a871",
+              "parent_id": "08e2e2d1-4aa9-4f0a-9045-daf2abbea7fb",
+              "id": "028257d0-109c-480c-8c45-d0006ff7daef",
               "function": "convert_prompt_template",
               "system_metrics": {}
             },
@@ -80,99 +80,58 @@
                   },
                   {
                     "role": "user",
-                    "content": "I need to open a problem report for part number ABC 123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24°C and we are seeing this after three to four laps during once when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG 234."
+                    "content": "I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
                   }
                 ]
               },
               "output": {
-                "id": "chatcmpl-9MQQUObc3xMuTHAmL26GJidzzriiK",
+                "id": "chatcmpl-9PTea5gEglmECKZodNmEFgrrhTxtb",
                 "choices": [
                   {
                     "finish_reason": "stop",
                     "index": 0,
                     "logprobs": null,
                     "message": {
-                      "content": "Summary:\n- Brake rotor overheating causing glazing on pads\n- Part number ABC 123\n- Occurs after three to four laps when driver brakes late and aggressively into corners\n- Severity rating: 2\n- Impacts front brake assembly EFG 234\n\nReported by: Jane Doe",
+                      "content": "Summary:\n- Brake rotor overheating causing glazing on the pads\n- Part number: ABC123\n- Temperature above 24 degrees Celsius\n- Occurs after three to four laps during runs with late and aggressive braking into corners\n- Technical priority: 2\n- Impacts front brake assembly EFG234\n\nReported by: Jane Doe",
                       "role": "assistant",
                       "function_call": null,
                       "tool_calls": null
-                    },
-                    "content_filter_results": {
-                      "hate": {
-                        "filtered": false,
-                        "severity": "safe"
-                      },
-                      "self_harm": {
-                        "filtered": false,
-                        "severity": "safe"
-                      },
-                      "sexual": {
-                        "filtered": false,
-                        "severity": "safe"
-                      },
-                      "violence": {
-                        "filtered": false,
-                        "severity": "safe"
-                      }
                     }
                   }
                 ],
-                "created": 1715131826,
+                "created": 1715859216,
                 "model": "gpt-35-turbo",
                 "object": "chat.completion",
                 "system_fingerprint": null,
                 "usage": {
-                  "completion_tokens": 61,
-                  "prompt_tokens": 365,
-                  "total_tokens": 426
-                },
-                "prompt_filter_results": [
-                  {
-                    "prompt_index": 0,
-                    "content_filter_results": {
-                      "hate": {
-                        "filtered": false,
-                        "severity": "safe"
-                      },
-                      "self_harm": {
-                        "filtered": false,
-                        "severity": "safe"
-                      },
-                      "sexual": {
-                        "filtered": false,
-                        "severity": "safe"
-                      },
-                      "violence": {
-                        "filtered": false,
-                        "severity": "safe"
-                      }
-                    }
-                  }
-                ]
+                  "completion_tokens": 70,
+                  "prompt_tokens": 363,
+                  "total_tokens": 433
+                }
               },
-              "start_time": 1715149826.97164,
-              "end_time": 1715149828.407898,
+              "start_time": 1715877210.542168,
+              "end_time": 1715877218.918312,
               "error": null,
               "children": [],
               "node_name": null,
-              "parent_id": "b2d175e8-89e5-4c1f-b837-a0367e49ac83",
-              "id": "0a85e547-f667-4c13-97b6-41940ac33850",
+              "parent_id": "08e2e2d1-4aa9-4f0a-9045-daf2abbea7fb",
+              "id": "c6ebce38-9efd-41ba-90aa-4c1dec660746",
               "function": "openai.resources.chat.completions.Completions.create",
               "system_metrics": {
-                "completion_tokens": 61,
-                "prompt_tokens": 365,
-                "total_tokens": 426
+                "completion_tokens": 70,
+                "prompt_tokens": 363,
+                "total_tokens": 433
               }
             }
           ],
           "node_name": null,
           "parent_id": "",
-          "id": "b2d175e8-89e5-4c1f-b837-a0367e49ac83",
+          "id": "08e2e2d1-4aa9-4f0a-9045-daf2abbea7fb",
           "function": "flow_entry",
           "system_metrics": {
-            "completion_tokens": 61,
-            "prompt_tokens": 365,
-            "total_tokens": 426
+            "completion_tokens": 70,
+            "prompt_tokens": 363,
+            "total_tokens": 433
           }
         }
       ],
@@ -180,16 +139,16 @@
       "description": "",
       "tags": null,
       "system_metrics": {
-        "completion_tokens": 61,
-        "prompt_tokens": 365,
-        "total_tokens": 426,
-        "duration": 12.84483
+        "completion_tokens": 70,
+        "prompt_tokens": 363,
+        "total_tokens": 433,
+        "duration": 9.301596
       },
       "result": {
-        "output": "Summary:\n- Brake rotor overheating causing glazing on pads\n- Part number ABC 123\n- Occurs after three to four laps when driver brakes late and aggressively into corners\n- Severity rating: 2\n- Impacts front brake assembly EFG 234\n\nReported by: Jane Doe"
+        "output": "Summary:\n- Brake rotor overheating causing glazing on the pads\n- Part number: ABC123\n- Temperature above 24 degrees Celsius\n- Occurs after three to four laps during runs with late and aggressive braking into corners\n- Technical priority: 2\n- Impacts front brake assembly EFG234\n\nReported by: Jane Doe"
       },
       "upload_metrics": false,
-      "otel_trace_id": "0x18e1314e9f1e90f6d5c7dca01fad0a5c",
+      "otel_trace_id": "0x3f4376945d1daa0a0c6bf63b1e52c560",
       "message_format": "basic"
     }
   ],
