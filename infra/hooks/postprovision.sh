@@ -3,8 +3,9 @@
 echo  "Building summarizationapp:latest..."
 az acr build --subscription ${AZURE_SUBSCRIPTION_ID} --registry ${AZURE_CONTAINER_REGISTRY_NAME} --image summarizationapp:latest ./src/
 image_name="${AZURE_CONTAINER_REGISTRY_NAME}.azurecr.io/summarizationapp:latest"
-az containerapp update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${RESOURCE_GROUP_NAME} --image ${image_name}
-az containerapp ingress update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${RESOURCE_GROUP_NAME} --target-port 8080
+echo "Image name: ${image_name}"
+az containerapp update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${AZURE_RESOURCE_GROUP} --image ${image_name}
+az containerapp ingress update --subscription ${AZURE_SUBSCRIPTION_ID} --name ${SERVICE_ACA_NAME} --resource-group ${AZURE_RESOURCE_GROUP} --target-port 5000
 
 
 echo "Starting postprovisioning..."
@@ -27,6 +28,7 @@ if [ -z "$resourceGroupName" ] || [ -z "$openAiService" ] || [ -z "$subscription
 fi
 
 # Retrieve the keys
+az account set --subscription $subscriptionId
 apiKey=$(az cognitiveservices  account keys list --name $openAiService --resource-group $resourceGroupName --subscription $subscriptionId --query key1 --output tsv)
 
 # Set the environment variables using azd env set

@@ -3,8 +3,9 @@
 Write-Output  "Building summarizationapp:latest..."
 az acr build --subscription $env:AZURE_SUBSCRIPTION_ID --registry $env:AZURE_CONTAINER_REGISTRY_NAME --image summarizationapp:latest ./src/
 $image_name = $env:AZURE_CONTAINER_REGISTRY_NAME + '.azurecr.io/summarizationapp:latest'
-az containerapp update --subscription $env:AZURE_SUBSCRIPTION_ID --name $env:SERVICE_ACA_NAME --resource-group $env:AZURE_OPENAI_RESOURCE_GROUP --image $image_name
-az containerapp ingress update --subspription $env:AZURE_SUBSCRIPTION_ID --name $env:SERVICE_ACA_NAME --resource-group $env:AZURE_OPENAI_RESOURCE_GROUP --target-port 8080
+Write-Host "Image name: $image_name"
+az containerapp update --subscription $env:AZURE_SUBSCRIPTION_ID --name $env:SERVICE_ACA_NAME --resource-group $env:AZURE_RESOURCE_GROUP --image $image_name
+az containerapp ingress update --subscription $env:AZURE_SUBSCRIPTION_ID --name $env:SERVICE_ACA_NAME --resource-group $env:AZURE_RESOURCE_GROUP --target-port 5000
 
 # Retrieve service names, resource group name, and other values from environment variables
 $resourceGroupName = $env:AZURE_RESOURCE_GROUP
@@ -25,6 +26,7 @@ if ([string]::IsNullOrEmpty($resourceGroupName) -or [string]::IsNullOrEmpty($ope
 }
 
 # Retrieve the keys
+az account set --subscription $subscriptionId
 $apiKey = (az cognitiveservices account keys list --name $openAiService --resource-group $resourceGroupName --query key1 --output tsv)
 
 # Set the environment variables using azd env set
