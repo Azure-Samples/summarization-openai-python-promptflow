@@ -15,8 +15,8 @@ This sample creates a web-based app that allows workers at a company called Cont
       - [Prerequisites](#prerequisites)
       - [Initializing the project](#initializing-the-project)
 - [Deployment](#deployment)
-- [Local Development](#local-development)
-  - [Explore the prompty file](#explore-the-prompty-file)
+- [Exploring the sample](#exploring-the-sample)
+  - [Understanding the prompty file](#understanding-the-prompty-file)
   - [Testing the sample](#testing-the-sample)
 - [Costs](#costs)
 - [Security Guidelines](#security-guidelines)
@@ -69,6 +69,8 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
 
     This project uses gpt-3.5-turbo which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly.
 
+Once the above steps are completed you can jump straight to [exploring the sample](#exploring-the-sample). 
+
 ### VS Code Dev Containers
 
 A related option is VS Code Dev Containers, which will open the project in your local VS Code using the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers):
@@ -80,7 +82,9 @@ A related option is VS Code Dev Containers, which will open the project in your 
 
 3. In the VS Code window that opens, once the project files show up (this may take several minutes), open a terminal window.
 
-### Local environment
+Once you've completed these steps jump to [deployment](#deployment). 
+
+### Local Environment
 
 #### Prerequisites
 
@@ -107,7 +111,7 @@ pip install -r requirements.txt
 
 ## Deployment
 
-Once you've opened the project in [Codespaces](#github-codespaces), [Dev Containers](#vs-code-dev-containers), or [locally](#local-environment), you can deploy it to Azure.
+Once you've opened the project in [Dev Containers](#vs-code-dev-containers), or [locally](#local-environment), you can deploy it to Azure.
 
 1. Sign in to your Azure account:
 
@@ -127,9 +131,9 @@ Once you've opened the project in [Codespaces](#github-codespaces), [Dev Contain
 
 4. A `.env` file should have been created in the src folder. Move this file into the `summarizationapp` folder. This will contain all the environment variables you need. 
 
-## Local Development
+## Exploring the sample
 
-### Explore the prompty file
+### Understanding the prompty file
 
 This sample repository contains a summarize prompty file you can explore. In this sample we are telling the model to summarize the reports given by a worker in a specific format. 
 
