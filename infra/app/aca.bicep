@@ -60,6 +60,10 @@ module app '../core/host/container-app-upsert.bicep' = {
         name: 'AZURE_SPEECH_REGION'
         value: speechRegion
       }
+      {
+        name: 'AZURE_SPEECH_RESOURCE_ID'
+        value: speechResourceId 
+      }
 
     ]
     targetPort: 5000

@@ -100,7 +100,7 @@ def text_to_summary(ticket_text):
     # Load prompty with AzureOpenAIModelConfiguration override
     if os.getenv("OPENAI_HOST") == 'azure':
         configuration = AzureOpenAIModelConfiguration(
-            azure_deployment=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT"],
+            azure_deployment=os.environ["AZURE_OPENAI_CHATGPT_DEPLOYMENT"],
             api_version=os.environ["AZURE_OPENAI_API_VERSION"],
             azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
         )
