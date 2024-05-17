@@ -69,6 +69,13 @@ The easiest way to get started is GitHub Codespaces, since it will setup all the
 
     This project uses gpt-3.5-turbo which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly.
 
+5. Install the necessary Python packages:
+
+    ```
+    cd src
+    pip install -r requirements.txt
+    ```
+
 Once the above steps are completed you can jump straight to [exploring the sample](#exploring-the-sample). 
 
 ### VS Code Dev Containers
@@ -95,19 +102,12 @@ Once you've completed these steps jump to [deployment](#deployment).
 
 #### Initializing the project
 
-1. Create a new folder and switch to it in the terminal, then run this command to download the project code:
+Create a new folder and switch to it in the terminal, then run this command to download the project code:
 
     ```shell
     azd init -t summarization-openai-python-promptflow
     ```
     Note that this command will initialize a git repository, so you do not need to clone this repository.
-
-2. Install required packages:
-
-```shell
-cd src/summarizationapp
-pip install -r requirements.txt
-```
 
 ## Deployment
 
@@ -121,15 +121,20 @@ Once you've opened the project in [Dev Containers](#vs-code-dev-containers), or 
 
     If you have any issues with that command, you may also want to try `azd auth login --use-device-code`.
 
-3. Provision the resources and deploy the code:
+2. Provision the resources and deploy the code:
 
     ```shell
     azd up
     ```
 
-    This project uses gpt-3.5-turbo which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly.
+3. Install the necessary Python packages:
 
-4. A `.env` file should have been created in the src folder. Move this file into the `summarizationapp` folder. This will contain all the environment variables you need. 
+    ```
+    cd src
+    pip install -r requirements.txt
+    ```
+
+    This project uses gpt-3.5-turbo which may not be available in all Azure regions. Check for [up-to-date region availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models#standard-deployment-model-availability) and select a region during deployment accordingly.
 
 ## Exploring the sample
 
@@ -154,14 +159,14 @@ If you ran the provisioning step above correctly, all of the variables should al
 
 This repository contains sample data to be able to test the project end to end. To run this project you'll need to pass in as input a reported issue to be summarized. You can pass this input as either a `.wav` file or a string of text. The `data/audio-data/` folder contains sample audio files for you to use or you can use the example string shown below. Below are the commands you can use in your terminal to run the project locally with promptflow.
 
-Testing with sample audio data: 
+Testing with sample audio data. Make sure you are in the `src` directory: 
 ``` bash
-pf flow test --flow ./src/summarizationapp --inputs problem="data/audio-data/issue0.wav"
+pf flow test --flow summarizationapp --inputs problem="data/audio-data/issue0.wav"
 ```
 
 Testing with sample text data:
 ``` bash
-pf flow test --flow ./src/summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
+pf flow test --flow summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
 ```
 
 To understand how the code works look through the `speech_to_text.py` file. 
