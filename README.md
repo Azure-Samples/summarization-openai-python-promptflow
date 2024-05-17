@@ -169,17 +169,7 @@ Testing with sample text data:
 pf flow test --flow summarizationapp --inputs problem="I need to open a problem report for part number ABC123. The brake rotor is overheating causing glazing on the pads. We track temperature above 24 degrees Celsius and we are seeing this after three to four laps during runs when the driver is braking late and aggressively into corners. The issue severity is to be prioritized as a 2. This is impacting the front brake assembly EFG234"
 ```
 
-To understand how the code works look through the `speech_to_text.py` file. 
-
-1. Run the local server:
-
-    ```shell
-    python -m flask --debug --app src/app:app run --port 5000
-    ```
-
-3. Click 'http://127.0.0.1:5000' in the terminal, which should open a new tab in the browser.
-
-4. Try the API at '/get_response' and try passing in a parameter at the end of the URL, like '/get_response?problem="string"'.
+To understand how the code works look through the `summarize.py` file. 
 
 ## Costs
 
