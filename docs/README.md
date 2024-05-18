@@ -9,13 +9,13 @@ products:
   - ai-services
   - azure-openai
 urlFragment: summarization-openai-python-promptflow
-name: Process Automation: Speech to Text and Summarization with ACA
+name: Process Automation with Speech to Text and Summarization with Azure Container Apps
 description: This sample creates a web-based app that allows workers at a company called Contoso Manufacturing to report issues via text or speech.
 ---
 
 <!-- YAML front-matter schema: https://review.learn.microsoft.com/help/contribute/samples/process/onboarding?branch=main#supported-metadata-fields-for-readmemd -->
 
-# Process Automation: Speech to Text and Summarization with ACA
+# Process Automation: Speech to Text and Summarization with Azure Container Apps
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/summarization-openai-python-promptflow) [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/azure-samples/summarization-openai-python-promptflow)
 
