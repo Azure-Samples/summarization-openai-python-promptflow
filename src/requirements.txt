@@ -1,4 +1,4 @@
-Flask==2.3.2
+Flask==3.0.3
 gunicorn==22.0.0
 azure-cosmos
 azure-search-documents==11.4.0
