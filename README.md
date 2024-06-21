@@ -147,7 +147,7 @@ The prompty file contains the following:
 - configuration: Details about the LLM model including:
   - api type: chat or completion
   - configuration: connection type (azure_openai or openai) and environment variables
-  - model parametes: max_tokesn, temperature and response_format (text or json_object)
+  - model parameters: max_tokesn, temperature and response_format (text or json_object)
 - inputs: the content input from the user, where each input should have a type and can also have a default value
 - outputs: where the output should have a type like string
 - Sample Section: a sample of the inputs to be provided
