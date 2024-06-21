@@ -14,7 +14,6 @@ sample:
     when the engine automatically switches from gas back to electric power. This is unexpected and exceeds the allowed emissions 
     for 3-4 seconds before returning to normal. I want to raise a high severity priority 2 problem report. I believe the issue could 
     be caused by a sensor with the part number ES001043"
-  chat_history: [] 
 ---
 
 system:
