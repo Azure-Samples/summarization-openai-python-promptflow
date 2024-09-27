@@ -118,7 +118,7 @@ A related option is VS Code Dev Containers, which will open the project in your 
 2. Install required packages:
 
 ```shell
-cd src/summarizationapp
+cd src
 pip install -r requirements.txt
 ```
 
