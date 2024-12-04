@@ -1,7 +1,7 @@
 Flask==3.0.3
 gunicorn==22.0.0
 azure-cosmos
-azure-search-documents==11.4.0
+azure-search-documents==11.5.1
 azure-identity
 azure-keyvault-secrets
 azure-monitor-opentelemetry-exporter --pre
